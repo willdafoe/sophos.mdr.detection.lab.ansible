@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+  collections:
+    - sophos.ms_defender_lab
+  vars:
+    debug_enabled: true
+    tf_vars_files: '{{ playbook_dir }}/variables.auto.tfvars'
+    tf_vars:
+      enabled: "true"
+      name: "dc"
+      namespace: "testing"
+      environment: "test"
+      location: "centralus"
+      stage: "test"
+  tasks:
+    - import_role:
+        name: azure
+
+          
