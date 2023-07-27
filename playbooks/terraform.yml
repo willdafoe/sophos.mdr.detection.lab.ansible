@@ -5,17 +5,19 @@
   collections:
     - sophos.ms_defender_lab
   vars:
-    debug_enabled: true
-    tf_vars_files: '{{ playbook_dir }}/variables.auto.tfvars'
-    tf_vars:
-      enabled: "true"
-      name: "dc"
-      namespace: "testing"
-      environment: "test"
-      location: "centralus"
-      stage: "test"
+    debug_enabled: false
+    cloud_provider: azure
+    workspace: test
+
+ #   tf_vars_files: '{{ playbook_dir }}/variables.auto.tfvars'
   tasks:
     - import_role:
-        name: azure
+        name: common
+      vars: 
+        state: planned
+        variables:
+          enabled: "true"
+          name: "detection lab"
+          location: "centralus"
 
           
