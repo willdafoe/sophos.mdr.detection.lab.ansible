@@ -1,0 +1,14 @@
+---
+- name: Read outputs from project path
+  cloud.terraform.terraform_output:
+    project_path: "{{ project_path }}"
+    state_file: "{{ state_file }}"
+  register: terraform_output
+
+- name: Add hosts from terraform_output to the group defined in terraform_output
+  ansible.builtin.add_host:
+    name: "{{ item[mapping_variables.name] }}"
+    groups: "{{ item[mapping_variables.group] }}"
+    ansible_host: "{{ item[mapping_variables.ip] }}"
+    ansible_user: "{{ item[mapping_variables.user] }}"
+  loop: "{{ terraform_output.outputs[mapping_variables.host_list].value }}"

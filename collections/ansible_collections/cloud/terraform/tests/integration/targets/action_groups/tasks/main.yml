@@ -1,0 +1,24 @@
+- set_fact:
+    test_basedir: "{{ test_basedir | default(output_dir) }}"
+
+- name: Copy terraform files to work space
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ test_basedir }}/{{ item }}"
+  loop:
+    - nothing.tf
+
+- block:
+    - name: Terraform in present non-check mode
+      cloud.terraform.terraform:
+      register: terraform_result
+      check_mode: true
+    - assert:
+        that:
+          - terraform_result is not failed
+          - terraform_result is changed
+  module_defaults:
+    group/cloud.terraform.terraform:
+      project_path: "{{ test_basedir }}"
+      state: present
+      force_init: true

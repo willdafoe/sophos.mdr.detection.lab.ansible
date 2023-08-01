@@ -3,21 +3,30 @@
   gather_facts: false
   ignore_errors: true
   collections:
-    - sophos.ms_defender_lab
+    - sophos.mdr
   vars:
     debug_enabled: false
     cloud_provider: azure
     workspace: test
+    lab: msdefender
+    state: absent
+    force_init: true
+    overwrite_init: true
+    variables:
+      enabled: "true"
+      name: "detection lab"
+      location: "eastus"
 
  #   tf_vars_files: '{{ playbook_dir }}/variables.auto.tfvars'
   tasks:
-    - import_role:
-        name: common
-      vars: 
-        state: planned
-        variables:
-          enabled: "true"
-          name: "detection lab"
-          location: "centralus"
+    - name: terraform plan
+      import_role:
+        name: common  
 
+
+#- name: configure domain
+#  hosts: all
+#  tasks:
+#    - include_tasks: configure_domain.yml  
+   
           
