@@ -1,17 +1,14 @@
 ---
-- hosts: all
+- hosts: domain_controllers
   gather_facts: false
   vars:
-    ansible_user: sophosAdmin
-    ansible_password: P@ssw0rd1234!
     ansible_connection: winrm
     ansible_winrm_transport: ntlm
     ansible_winrm_scheme: http
     ansible_winrm_server_cert_validation: ignore
     ansible_port: 5985
-    dns_domain_name: detectionlab.mdr
-    safe_mode_password: P@ssw0rd1234!
-  ignore_errors: true
+    ansible_user: '{{ domain_admin_username }}'
+    ansible_password: '{{ domain_admin_password }}'
   collections:
     - sophos.mdr
   

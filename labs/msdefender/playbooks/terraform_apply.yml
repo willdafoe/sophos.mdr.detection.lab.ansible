@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+  collections:
+    - sophos.mdr
+  vars:
+    state: present
+    force_init: true
+    complex_vars: true
+
+  tasks:
+    - name: terraform plan
+      import_role:
+        name: common  
