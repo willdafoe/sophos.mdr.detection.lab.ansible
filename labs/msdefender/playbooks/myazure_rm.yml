@@ -1,0 +1,8 @@
+plugin: azure_rm
+include_vm_resource_groups:
+    - defenderlab.microsoft.test.dev.eastus-00
+
+conditional_groups:
+    all: true
+    domain_controllers: "'dc' in computer_name"
+    windows_servers: "'WindowsServer' in image.offer"
