@@ -6,3 +6,21 @@ conditional_groups:
     all: true
     domain_controllers: "'dc' in computer_name"
     windows_servers: "'WindowsServer' in image.offer"
+
+hostvars_expressions:
+    windows_servers:
+        ansible_connection: winrm
+        ansible_winrm_transport: ntlm
+        ansible_winrm_scheme: http
+        ansible_winrm_server_cert_validation: ignore
+        ansible_port: 5985
+        ansible_user: sophosAdmin
+        ansible_password: P@ssw0rd1234!
+    domain_controllers:
+        ansible_connection: winrm
+        ansible_winrm_transport: ntlm
+        ansible_winrm_scheme: http
+        ansible_winrm_server_cert_validation: ignore
+        ansible_port: 5985
+        ansible_user: sophosAdmin
+        ansible_password: P@ssw0rd1234!
