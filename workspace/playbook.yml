@@ -6,8 +6,7 @@
   collections:
     - sophos.mdr
   vars:
-    debug_enabled: true
-    deployment_name: microsoft_defender
+    deployment_name: '{{ deployment_name }}'
     state: '{{ state }}'
     trusted_ip: '{{ trusted_ip }}'
     domain_controller_count: '{{ domain_controller_count }}'
