@@ -39,3 +39,5 @@ terraform.rc
 # Ansible.Windows
 **/collections/ansible_collections/ansible*
 **/collections/ansible_collections/ansible.windows*
+
+variables.yml
