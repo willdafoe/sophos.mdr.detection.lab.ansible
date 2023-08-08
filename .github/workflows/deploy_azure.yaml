@@ -1,0 +1,78 @@
+name: Deploy to Azure
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_name:
+        type: choice
+        description: Which deployment to run
+        options:
+          - microsoft_defender
+        required: true
+        default: microsoft_defender
+      name:
+        type: string
+        required: true
+        description: A custom name for the deployment label
+      namespace:
+        type: string
+        required: true
+        description: A custom namespace for the deployment label
+      environment:
+        type: choice
+        required: true
+        description: Which environment to deploy to
+        options:
+          - dev
+          - test
+          - prod
+      stage:
+        type: choice
+        required: true
+        description: A label descriptor for which stage the deployment is for
+        options:
+          - build
+          - test
+          - qa
+          - release
+      location:
+        type: string
+        required: true
+        description: The Azure region to deploy to
+      address_space:
+        type: string
+        required: true
+        description: The address space to use for the virtual network
+      admin_username:
+        type: string
+        required: true
+        description: The username for the domain admin account
+        default: sophos
+      admin_password:
+        type: string
+        required: true
+        description: The password for the domain admin account
+      dns_domain_name:
+        type: string
+        required: true
+        description: The DNS domain name to join
+        default: sophos.local
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: Lint Ansible Playbook
+        uses: ansible/ansible-lint-action@v4
+        with:
+          targets: ""
+  deployAnsible:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/ansible
+        with:
+          playbook: playbook.yml
