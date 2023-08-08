@@ -25,6 +25,8 @@ on:
           - present
           - planned
           - absent
+        required: true
+        default: present
       location:
         type: string
         required: true
