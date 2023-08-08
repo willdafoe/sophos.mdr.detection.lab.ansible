@@ -18,23 +18,13 @@ on:
         type: string
         required: true
         description: A custom namespace for the deployment label
-      environment:
+      state:
         type: choice
-        required: true
-        description: Which environment to deploy to
+        description: Equivalent to the terraform command. apply = present, destroy = absent, plan = planned
         options:
-          - dev
-          - test
-          - prod
-      stage:
-        type: choice
-        required: true
-        description: A label descriptor for which stage the deployment is for
-        options:
-          - build
-          - test
-          - qa
-          - release
+          - present
+          - planned
+          - absent
       location:
         type: string
         required: true
