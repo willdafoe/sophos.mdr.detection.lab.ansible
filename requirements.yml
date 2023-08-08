@@ -1,3 +1,5 @@
 collections:
   - ansible.windows
   - cloud.terraform
+  - name: https://github.com/willdafoe/sophos.ms_defender_lab.git
+    type: git

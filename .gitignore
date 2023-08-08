@@ -36,8 +36,7 @@ terraform.rc
 # R files
 *.Rhistory
 
-# Ansible.Windows
+# Ansible Collections
 **/collections/ansible_collections/ansible*
 **/collections/ansible_collections/ansible.windows*
-
-variables.yml
+**/collections/ansible_collections/cloud*
