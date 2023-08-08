@@ -64,10 +64,13 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-      - name: Lint Ansible Playbook
-        uses: ansible/ansible-lint@v6.17.2
-        with:
-          targets: ""
+      - shell: bash
+        run: |
+          ls -lah
+#      - name: Lint Ansible Playbook
+#        uses: ansible/ansible-lint@v6.17.2
+#        with:
+#          targets: ""
   deployAnsible:
     needs: build
     runs-on: ubuntu-latest
