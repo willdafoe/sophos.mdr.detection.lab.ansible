@@ -40,3 +40,7 @@ terraform.rc
 **/collections/ansible_collections/ansible*
 **/collections/ansible_collections/ansible.windows*
 **/collections/ansible_collections/cloud*
+
+# Act ignored files
+my.input
+

@@ -7,7 +7,8 @@ inputs:
     default: playbook.yml
   inventory:
     description: 'Ansible inventory to use'
-    required: false
+    required: true
+    default: localhost
 runs:
   using: 'docker'
   image: 'Dockerfile'
