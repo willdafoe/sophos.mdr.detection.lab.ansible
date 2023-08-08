@@ -69,8 +69,6 @@ jobs:
           ls -lah
       - name: Lint Ansible Playbook
         uses: ansible/ansible-lint@v6.17.2
-        with:
-          targets: ./workspace/playbook.yml
   deployAnsible:
     needs: build
     runs-on: ubuntu-latest
