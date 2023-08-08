@@ -1,0 +1,16 @@
+trusted_ip: "47.184.108.50/32"
+enabled: "true"
+name: "mdr"
+namespace: "microsoft"
+environment: "test"
+stage: "build-test"
+location: "eastus"
+address_space: 
+  - "10.0.0.0/16"
+subnet_count: 1
+domain_controller_count: 1
+windows_client_count: 1
+admin_username: "sophos"
+admin_password: "Myr7wDe5!9855"
+dns_domain_name: "detecionlab.local"
+safe_mode_password: "Myr7wDe5!9855"

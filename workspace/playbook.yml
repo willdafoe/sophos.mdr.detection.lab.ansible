@@ -1,0 +1,101 @@
+---
+- name: "[ansible.play] terraform provisioning"
+  hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+  collections:
+    - sophos.mdr
+  vars:
+    debug_enabled: true
+    deployment_name: microsoft_defender
+    state: '{{ state }}'
+    trusted_ip: '{{ trusted_ip }}'
+    domain_controller_count: '{{ domain_controller_count }}'
+    windows_client_count: '{{ windows_client_count }}'
+    subnet_count: '{{ subnet_count }}'
+    admin_username: '{{ admin_username }}'
+    admin_password: '{{ admin_password }}'      
+    terraform_variables:
+      enabled: '{{ enabled }}'
+      name: '{{ name }}'
+      namespace: '{{ namespace }}'
+      environment: '{{ environment }}'
+      stage: '{{ stage }}'
+      location: '{{ location }}'
+      address_space: '{{ address_space }}'
+
+  tasks:
+    - block:
+        - name: "[ansible.playbook] cloning repository"
+          import_role:
+            name: git
+        
+        - name: "[ansible.playbook] provisioning infrastructure"
+          import_role:
+            name: terraform
+          vars:
+            state: absent
+            variables: '{{ terraform_variables }}'
+
+      delegate_to: localhost
+
+- name: "[ansible.play] configuring domain controller"
+  hosts: domain_controllers
+  gather_facts: true
+  collections:
+    - sophos.mdr
+  vars:
+    ansible_connection: winrm
+    ansible_winrm_transport: ntlm
+    ansible_winrm_scheme: http
+    ansible_winrm_server_cert_validation: ignore
+    ansible_port: 5985
+    ansible_user: '{{ admin_username }}'
+    ansible_password: '{{ admin_password }}'
+    dns_domain_name: '{{ dns_domain_name }}'
+    safe_mode_password: '{{ safe_mode_password }}'
+  
+  tasks:
+    - block:
+        - name: "[ansible.playbook] configure domain controller"
+          import_role:
+            name: domain
+            tasks_from: domain_controller.yml
+      when: ansible_facts.windows_domain_role == "Stand-alone workstation" and state == "present"
+      
+
+- name: "[ansible.play] configuring domain members"
+  hosts: windows_clients
+  gather_facts: false
+  collections:
+    - sophos.mdr
+  vars:
+    ansible_connection: winrm
+    ansible_winrm_transport: ntlm
+    ansible_winrm_scheme: http
+    ansible_winrm_server_cert_validation: ignore
+    ansible_port: 5985
+    ansible_user: '{{ admin_username }}'
+    ansible_password: '{{ admin_password }}'
+  
+  tasks:
+    - block:
+        - name: "[ansible.playbook] getting domain controller IP address"
+          ansible.builtin.setup:
+          delegate_to: "{{ item}}"
+          delegate_facts: true
+          loop: "{{  groups['domain_controllers'] }}"
+          register: _domain_controller_facts
+        
+        - ansible.builtin.set_fact:
+            dns_server: '{{ _domain_controller_facts.results[0].ansible_facts.ansible_interfaces[0].ipv4.address }}'
+
+        - name: "[ansible.playbook] configure domain members"
+          import_role:
+            name: domain
+            tasks_from: domain_membership.yml
+
+      when: ansible_facts.windows_domain_role == "Stand-alone workstation" and state == "present"                
+
+
+
