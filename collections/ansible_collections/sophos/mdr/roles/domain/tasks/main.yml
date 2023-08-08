@@ -1,0 +1,6 @@
+---
+# tasks file for primary_dc
+- include_tasks: configure_domain_controller.yml
+  when: ansible_facts.windows_domain_role == 'Stand-alone server'
+
+- include_tasks: configure_domain_membership.yml

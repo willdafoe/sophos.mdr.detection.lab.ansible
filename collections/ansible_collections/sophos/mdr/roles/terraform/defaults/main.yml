@@ -1,0 +1,9 @@
+---
+# defaults file for terraform
+plan_file: '{{ project_path }}/terraform.plan'
+state_file: '{{ project_path }}/terraform.tfstate'
+lock_file: '{{ project_path }}/.terraform.lock.hcl'
+config_template: '{{ role_path }}/templates/config.yaml.j2'
+config: '{{ project_path }}/config/config.yaml'
+inventory_file: '{{ project_path }}/myazure_rm.yml'
+

@@ -1,0 +1,8 @@
+---
+# vars file for common
+env:
+  testing:
+    name: "MS Defender Lab Test"
+    namespace: "Testing"
+    environment: "{{ cloud_provider }} Test"
+    stage: "Test"

@@ -1,0 +1,27 @@
+---
+- block:      
+  - name: "[role.terraform] terraform destroy"
+    include_tasks: terraform.yml
+    vars:
+      state: absent
+      _check_mode: false
+  
+  - name: "[role.terraform] getting terraform files to clean up"
+    ansible.builtin.stat:
+      path: '{{ item }}'
+    with_items: 
+      - '{{ plan_file }}'
+      - '{{ state_file }}'
+      -  '{{ lock_file }}'
+      - '{{ config }}'
+      - '{{ inventory_file }}'
+    register: _terraform_files
+  
+  - ansible.builtin.debug:
+      var: _terraform_files.results[0].item
+  
+  - name: "[role.terraform] removing terraform files"
+    ansible.builtin.file:
+      path: '{{ item }}'
+      state: absent
+    with_items: '{{ _terraform_files.results[0].item }}'

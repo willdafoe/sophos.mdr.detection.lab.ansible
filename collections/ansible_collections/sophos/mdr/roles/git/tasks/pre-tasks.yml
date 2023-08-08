@@ -1,0 +1,20 @@
+---
+# Tasks file for pre-tasks
+- block:
+    - ansible.builtin.stat:
+        path: '{{ project_path }}'
+      register: _project_path
+
+    - name: "[role.git] checking if '{{ project_path }}' exists"
+      ansible.builtin.git:
+        repo: '{{ repo_uri }}'
+        dest: '{{ project_path }}'
+        clone: no
+        update: no
+      register: _git_repo
+      when: _project_path.stat.exists == false
+  
+    - name: "[role.git] cloning '{{ repo_uri }}' to '{{ project_path }}'"
+      include_tasks: checkout.yml
+      register: git_checkout
+      when: _project_path.stat.exists == false

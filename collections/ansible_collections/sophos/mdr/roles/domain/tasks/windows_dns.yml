@@ -1,0 +1,8 @@
+---
+- block:
+  - name: "[role.domain] configuring DNS on host {{ ansible_facts['hostname'] }}"
+    ansible.windows.win_dns_client:
+      suffixes: "{{ dns_domain_name }}"
+      dns_servers: "{{ dns_servers }}"
+      register: dns_state
+    when: dns_state.changed

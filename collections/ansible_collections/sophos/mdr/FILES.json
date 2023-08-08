@@ -1,0 +1,656 @@
+{
+ "files": [
+  {
+   "name": ".",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "meta/runtime.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "fc060e593861acef23adb14220f9b80e07a546bde40dac2dc57465a120f48413",
+   "format": 1
+  },
+  {
+   "name": "README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e189cbbcc2b7ca49f21556c1bca0c698c5687b9ac551d5975a2166af76988f12",
+   "format": 1
+  },
+  {
+   "name": "roles",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tasks/domain_controller.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "b1492551eacc4697910849ed4205b31079311c2c345d8167cdae6924d3658a78",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tasks/domain_membership.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "fb084d83eadaccc36deff82133f4e4a84228162d7872c99a0a1736e355a412ed",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tasks/windows_dns.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a02685f2df2651b07572dff7146f703d7037c063dd2b84c4f987cf7f3308a39b",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e625c60727cd36491faa73040ca78bf196217246e5283fc6cde6be807ceca355",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6fb78729a49efde0f4d8f88f6f56829436f0fb982033cf96b7743b2b4fc23188",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c88e08e1303f1a3a4c6fe0a87634d5cda5e8b5a2738f255d67b551570a63ff85",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tests",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tests/inventory",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e02233819b1a09844410549191813f7cc7ba360f21298578f4ba1727a27d87fc",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/tests/test.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9779501c690bb36187427793f67f8728062c1c69972cad9604158889a3ae6bf9",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cc751d75266f757a38189f15d54e548dc87706f14a39756995c27b49eaca8a07",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/handlers",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain/handlers/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "250333933cd936589fd69b05a7ee5b0c0bfd578850b403aee5d02b956619ece3",
+   "format": 1
+  },
+  {
+   "name": "roles/domain/vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/domain/vars/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f769448d62a693909e40e50c51585979a51a1c1b6367db2a31a3f9acbed2455d",
+   "format": 1
+  },
+  {
+   "name": "roles/git",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/git/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/git/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cc58d35d953a7ad6bdf58558b756cd789114b9622488fed20c6940ef32772494",
+   "format": 1
+  },
+  {
+   "name": "roles/git/tasks/pre-tasks.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "04df191179e16fe9362e22b089241df0302b9bdecb5e502836670e0394474306",
+   "format": 1
+  },
+  {
+   "name": "roles/git/tasks/checkout.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "09c0d20249ffb14a9f347b568b3d6eb2aaa0a0a511db0da05c7efe057723f73f",
+   "format": 1
+  },
+  {
+   "name": "roles/git/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/git/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3c315d1655062a5723ab3caafd513e36bafb0ae6db49164d6119cad8cb5b943e",
+   "format": 1
+  },
+  {
+   "name": "roles/git/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/git/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e145228bbd47b96ab053002e74590c01fd113bb0990ae35f1a4fa4710fb81476",
+   "format": 1
+  },
+  {
+   "name": "roles/git/tests",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/git/tests/inventory",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e02233819b1a09844410549191813f7cc7ba360f21298578f4ba1727a27d87fc",
+   "format": 1
+  },
+  {
+   "name": "roles/git/tests/test.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "eacd2c3fdd42514dbdfb46a560415c7e6d41d7eefc9670d7d5a4e16ada71db64",
+   "format": 1
+  },
+  {
+   "name": "roles/git/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cc751d75266f757a38189f15d54e548dc87706f14a39756995c27b49eaca8a07",
+   "format": 1
+  },
+  {
+   "name": "roles/git/handlers",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/git/handlers/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ce0003bb5c64d23ca9bb1506f18c88f562f434225cd43de93d06ca3f8b5dd76d",
+   "format": 1
+  },
+  {
+   "name": "roles/git/vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/git/vars/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cee2b78244ff0a2034638252791be37f8881e5f306280c15c017282725e8aaed",
+   "format": 1
+  },
+  {
+   "name": "roles/common",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/common/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/common/tasks/terraform.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "7ac115ae2be8c2c65aee68311f6dae816b48f077f50fd0c9a39d28d46159be03",
+   "format": 1
+  },
+  {
+   "name": "roles/common/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "50a7b50e4c768da75af5038db61899fe417ee03acd52addf7f60a472cea77b3f",
+   "format": 1
+  },
+  {
+   "name": "roles/common/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/common/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e19a64bf923408b8f029bff113196bf11bc8d06d6b8bdfb5fab8474d7bfdd4ae",
+   "format": 1
+  },
+  {
+   "name": "roles/common/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/common/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c5bc08241dcc98b9074a31438dffa6a23136a880e7d59c02cf8448cbd1b8a974",
+   "format": 1
+  },
+  {
+   "name": "roles/common/tests",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/common/tests/inventory",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e02233819b1a09844410549191813f7cc7ba360f21298578f4ba1727a27d87fc",
+   "format": 1
+  },
+  {
+   "name": "roles/common/tests/test.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "b5113f63af8292dd79c89bd0d22c143e971dfd2a5ea4e2165c9081edca4b91bc",
+   "format": 1
+  },
+  {
+   "name": "roles/common/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cc751d75266f757a38189f15d54e548dc87706f14a39756995c27b49eaca8a07",
+   "format": 1
+  },
+  {
+   "name": "roles/common/handlers",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/common/handlers/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3d6f41e851123c923ee9cca83228f89bc6d40d82b24d97a2267dd8f88613d331",
+   "format": 1
+  },
+  {
+   "name": "roles/common/vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/common/vars/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "996042fe711963b32b2151400cbb425df9a369e3dae49e65b52f48709aee5c2b",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/tasks/apply.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "230406c58f76c9f6e54b7a7896b5af7a68849eaa31caac293a382719a997485e",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/tasks/terraform.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e399657d6d4bed6613b836f3cd25d868c7796a8109ad50d042719ca6642fdc52",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/tasks/template.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f39e1b406439fd2c6fb5321c6755a2f602d7d04eeba28f0d99225eb1a839d716",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/tasks/plan.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "04aab0946d52216e3a338cd2f3048e429be0efbd54d8ddd9b0b8e4a63693e418",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c4a347140e82ec7996ef580bdf1f6d180747b231be480ccb80e68199bd6f60bf",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/tasks/destroy.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cda09560924a3646de7c243bd4eac0902d3619acf2ddb8769bfa0bbb3c5083d5",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "605e641cf630b8c2666ce8a96c5d048b76e7a2ef1a9f5b9336aa2e8dee75257d",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/meta/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c88e08e1303f1a3a4c6fe0a87634d5cda5e8b5a2738f255d67b551570a63ff85",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cc751d75266f757a38189f15d54e548dc87706f14a39756995c27b49eaca8a07",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/templates",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/templates/config.yaml.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a1352a68c1fc205276ee4336b762f5440686eaaa313d2193924fb7461c7da545",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/handlers",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/handlers/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "467e31d2bbbe187451575b538541c0dcfaaef9855ac2dce74736c7fe8323b029",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/vars/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9d76a70316720bbfffb2ad15e0b4f49106bce2e0c354854b07e94c8be83a1c53",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/provider.tf",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "98c2eb6625713f88b6937099cb19f6bbea60a50d88dfbd238779824feb683990",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/main.tf",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ef359c2577f08443338ae8cb2598d7876316642a73158c26cafb5a78dfd416f5",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/variables.tf",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "bd04a2a4e438fccfe8bf8efb530244061def3f64c0a4b6192985c164a752a1d0",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/config",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/config/environment",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/config/environment/test",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/config/environment/test/config.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "48d146302581596430a6ca71b9588eaeaaa58ffef3b3279efff7787d17b605f1",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/config/environment/dev",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/config/environment/dev/config.yaml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "40dc3c5544528fa019e282dc428fadfe92e85bc94e6bb9583ea18f80c2cf2c62",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/.terraform.lock.hcl",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9e312bf6da5b2850da16c141aa198b80beadda2919a1fc6e8d418f1d0fa078e0",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/inventory.tpl",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3a67ec5ac352b1242d661e20c47304df82c8603d9bdabb4b407b2e8161720de6",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/output.tf",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "67f6c7808c81a4e99f1c90d05fc81a3fbef2b566e375add0e7564dec7849a5c6",
+   "format": 1
+  },
+  {
+   "name": "roles/terraform/files/terraform/azure/locals.tf",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6dc5c4eb56644ca3940b1863e53b06f133d233257c78d4c9b94534e3ad6b8283",
+   "format": 1
+  },
+  {
+   "name": "plugins",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "plugins/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c8e91383ed2e19a696e2c055fbbd1cf526bc54d4fe590619ee0896b21bf0183e",
+   "format": 1
+  }
+ ],
+ "format": 1
+}

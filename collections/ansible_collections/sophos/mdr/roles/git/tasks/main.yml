@@ -1,0 +1,13 @@
+---
+# tasks file for git
+- block:
+  - ansible.builtin.set_fact:
+      project_path: '{{ playbook_dir  }}/{{ item.value.name }}'
+      repo_uri: '{{ item.value.uri }}'
+    when: "'{{ deployment_name }}' is in item.key"
+    loop: "{{ lookup('ansible.builtin.dict', workspaces, wantlist=True) }}"
+
+  - name: "[git.role] Checking if repository has already been cloned locally"
+    include_tasks: pre-tasks.yml
+
+  

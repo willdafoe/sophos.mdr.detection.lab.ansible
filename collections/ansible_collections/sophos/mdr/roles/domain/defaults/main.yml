@@ -1,0 +1,7 @@
+---
+# defaults file for primary_dc
+default_database_path: "'%SYSTEMROOT%\\NTDS'"
+default_dns_domain_name: "detectionlab.mdr"
+dns_forwarders:
+  - 8.8.8.8
+  - 8.8.4.4

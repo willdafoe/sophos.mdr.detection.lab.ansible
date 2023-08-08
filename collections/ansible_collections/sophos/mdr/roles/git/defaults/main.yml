@@ -1,0 +1,6 @@
+---
+# defaults file for git
+workspaces:
+    microsoft_defender:  
+      name: microsoft_defender
+      uri: "https://github.com/willdafoe/mdr.microsoft.defender.detection_lab.git"

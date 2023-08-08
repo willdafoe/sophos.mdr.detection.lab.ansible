@@ -1,0 +1,26 @@
+---
+  - block:
+    - community.general.terraform:
+        backend_config: '{{ backend_config | default(omit) }}'
+        backend_config_files: '{{ backend_config_files | default(omit) }}'
+        binary_path: '{{ binary_path | default(omit) }}'
+        check_destroy: '{{ check_destroy | default(false) }}'
+        complex_vars: '{{ complex_vars | default(true) }}'
+        force_init: '{{ force_init | default(false) }}'
+        init_reconfigure: '{{ init_reconfigure | default(false) }}'
+        lock: '{{ lock | default(true) }}'
+        lock_timeout: '{{ lock_timeout | default(omit) }}'
+        overwrite_init: '{{ overwrite_init | default(true) }}'
+        paralllelism: '{{ parallelism | default(omit) }}'
+        plan_file: '{{ plan_file | default(omit) }}'
+        plugin_paths: '{{ plugin_paths | default(omit) }}'
+        project_path: '{{ project_path }}'
+        provider_upgrade: '{{ provider_upgrade | default(false) }}'
+        purge_workspace: '{{ purge_workspace | default(false) }}'
+        state: '{{ state }}'
+        state_file: '{{ state_file | default(omit) }}'
+        targets: '{{ targets | default(omit) }}'
+        variables: '{{ variables | default(omit) }}'
+        variable_files: '{{ variable_files | default(omit) }}'
+        workspace: "{{ workspace | default('default') }}"
+      check_mode: '{{ plan_only | default(false) }}'
