@@ -59,18 +59,7 @@ on:
         default: sophos.local
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v2
-      - shell: bash
-        run: |
-          ls -lah
-      - name: Lint Ansible Playbook
-        uses: ansible/ansible-lint@v6.17.2
   deployAnsible:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
