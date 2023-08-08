@@ -10,7 +10,7 @@ address_space:
 subnet_count: 1
 domain_controller_count: 1
 windows_client_count: 1
-admin_username: "sophos"
-admin_password: "Myr7wDe5!9855"
+admin_username: "Administrator"
+admin_password: "$0m3P@$$W0rd!"
 dns_domain_name: "detecionlab.local"
-safe_mode_password: "Myr7wDe5!9855"
+safe_mode_password: "@n0th3rP@$$w0rd!"
