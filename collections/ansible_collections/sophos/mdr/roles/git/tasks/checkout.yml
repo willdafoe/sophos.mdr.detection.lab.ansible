@@ -1,9 +1,0 @@
----
-# Tasks for checkout
-- block:
-  - name: "[role.git] cloning repository"
-    ansible.builtin.git:
-      repo: '{{ repo_uri }}'
-      dest: '{{ project_path }}'
-      clone: true
-    
