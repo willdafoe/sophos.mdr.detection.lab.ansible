@@ -52,7 +52,7 @@
     ansible_user: '{{ admin_username }}'
     ansible_password: '{{ admin_password }}'
     dns_domain_name: '{{ dns_domain_name }}'
-    safe_mode_password: '{{ safe_mode_password }}'
+    safe_mode_password: '{{ admin_password }}'
   
   tasks:
     - block:
