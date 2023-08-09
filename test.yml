@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+  connection: local
+  collections:
+    - sophos.mdr
+  vars:
+    terraform_command: plan
+  
+  tasks:
+    - import_role:
+        name: git
+    - import_role: 
+        name: terraform

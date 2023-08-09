@@ -1,0 +1,16 @@
+---
+- block:
+  - ansible.builtin.stat:
+      path: '{{ plan_file}}'
+    register: _plan_file
+
+  - name: "[role.terraform] terraform apply"
+    include_tasks: terraform.yml
+    vars:
+      state: present
+      _check_mode: false
+    when: _plan_file.stat.exists == false
+  
+  - ansible.builtin.copy:
+      src: '{{ inventory_file }}'
+      dest: '{{ playbook_dir }}'

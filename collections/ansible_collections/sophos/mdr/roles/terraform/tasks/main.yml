@@ -1,0 +1,19 @@
+---
+# tasks file for terraform
+- ansible.builtin.set_fact:
+    state: '{{ state }}'
+
+- ansible.builtin.debug:
+    var: state
+    
+- include_tasks: template.yml
+
+- ansible.builtin.stat:
+    path: '{{ plan_file }}'
+  register: _plan_file
+
+- include_tasks: plan.yml
+  when: state == "planned" or state == "present" and _plan_file.stat.exists == false
+
+- include_tasks: destroy.yml
+  when: state == "absent"

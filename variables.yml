@@ -1,16 +1,10 @@
+deployment_name: "microsoft_defender"
 trusted_ip: "47.184.108.50/32"
-enabled: "true"
+state: present
 name: "mdr"
 namespace: "microsoft"
-environment: "test"
-stage: "build-test"
 location: "eastus"
-address_space: 
-  - "10.0.0.0/16"
-subnet_count: 1
-domain_controller_count: 1
-windows_client_count: 1
+address_space: "10.0.0.0/16"
 admin_username: "Administrator"
 admin_password: "$0m3P@$$W0rd!"
 dns_domain_name: "detecionlab.local"
-safe_mode_password: "@n0th3rP@$$w0rd!"

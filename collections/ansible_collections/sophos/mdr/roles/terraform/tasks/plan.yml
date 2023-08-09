@@ -1,0 +1,16 @@
+---
+- block:
+  - name: "[role.terraform] terraform plan"
+    include_tasks: terraform.yml
+    vars:
+      force_init: true
+      state: planned
+      _check_mode: true
+  
+  - ansible.builtin.stat:
+      path: '{{ plan_file }}'
+    register: planned
+  
+  - include_tasks: apply.yml
+    when: state == "present" and planned.stat.exists == true
+    

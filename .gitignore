@@ -43,4 +43,5 @@ terraform.rc
 
 # Act ignored files
 my.input
+my.secrets
 

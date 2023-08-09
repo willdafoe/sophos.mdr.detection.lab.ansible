@@ -1,0 +1,74 @@
+SECURITY_RULES: 
+    inbound_rules:
+        - name: "SSH"
+          priority: 1001
+          access: "Allow"
+          direction: "Inbound"
+          protocol: "Tcp"
+          source_address_prefix: "{{ trusted_ip }}"
+          source_port_range: "*"
+          destination_address_prefix: "*"
+          destination_port_range: "22"
+          description: "Allow SSH from trusted IP"
+        - name: "RDP"
+          priority: 1004
+          access: "Allow"
+          direction: "Inbound"    
+          protocol: "Tcp"
+          source_address_prefix: "{{ trusted_ip }}"  
+          source_port_range: "*"
+          destination_address_prefix: "*"
+          destination_port_range: "3389"
+          description: "Allow RDP from trusted IP"
+        - name: "WinRM"
+          priority: 1005
+          access: "Allow"
+          direction: "Inbound"    
+          protocol: "Tcp"
+          source_address_prefix: "{{ trusted_ip }}"
+          source_port_range: "*"
+          destination_address_prefix: "*"
+          destination_port_range: "5985"
+          description: "Allow WinRM from trusted IP"
+        - name: "WindowsATA"
+          priority: 1006
+          access: "Allow"
+          direction: "Inbound"    
+          protocol: "Tcp"
+          source_address_prefix: "{{ trusted_ip }}"
+          source_port_range: "*"
+          destination_address_prefix: "*"
+          destination_port_range: "443"
+          description: "Allow Windows ATA from trusted IP"
+
+WINDOWS_VIRTUAL_MACHINE:
+  domain_controller:
+    vm_instance_count: {{ domain_controller_count | default(1) }}
+    publisher: "MicrosoftWindowsServer"
+    offer: "WindowsServer"
+    sku: "2016-Datacenter"
+    allow_extension_operations: true
+    hotpatching_enabled: false
+    license_type: "Windows_Server"
+    provision_vm_agent: true
+    computer_name: "dc"
+    admin_username: "{{ admin_username }}"
+    admin_password: "{{ admin_password }}"
+    os_disk_size_gb: 128
+    tags:
+        role: "domain_controller"
+  windows_client:
+    vm_instance_count: {{ windows_client_count | default(1) }}
+    publisher: "MicrosoftWindowsDesktop"
+    offer: "windows10preview"
+    sku: "win10-22h2-ent"
+    allow_extension_operations: true
+    hotpatching_enabled: false
+    license_type: "Windows_Client"
+    provision_vm_agent: true
+    computer_name: "win"
+    admin_username: "{{ admin_username }}"
+    admin_password: "{{ admin_password }}"
+    os_disk_size_gb: 128
+    tags:
+        role: "windows_client"

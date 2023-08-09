@@ -1,0 +1,24 @@
+---
+# tasks file for git
+- block:
+  - ansible.builtin.set_fact:
+      project_path: '{{ playbook_dir  }}/{{ item.value.name }}'
+      repo_uri: '{{ item.value.uri }}'
+    when: "'{{ deployment_name }}' is in item.key"
+    loop: "{{ lookup('ansible.builtin.dict', workspaces, wantlist=True) }}"
+
+  - name: "[git.role] checking if repository has already been cloned locally"
+    ansible.builtin.stat:
+      path: '{{ project_path }}'
+    register: repo_check
+
+  - name: "[git.role] cloning repository"
+    include_tasks: checkout.yml
+    when: repo_check.stat.exists == false
+  
+  - name: "[git.role] skipping repository clone"
+    ansible.builtin.debug:
+      msg: "Skipping cloning repository {{ repo_uri }}"
+    when: repo_check.stat.exists == true
+
+  

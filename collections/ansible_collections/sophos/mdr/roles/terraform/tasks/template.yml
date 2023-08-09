@@ -1,0 +1,5 @@
+---
+- name: "[role.terraform] generating configuration from template"
+  ansible.builtin.template:
+    src: '{{ config_template }}'
+    dest: '{{ config}}'

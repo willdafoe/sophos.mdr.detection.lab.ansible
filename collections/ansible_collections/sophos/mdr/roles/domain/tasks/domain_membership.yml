@@ -1,0 +1,29 @@
+---
+- block:
+  - ansible.builtin.debug:
+      var: dns_server
+
+  - name: "[role.domain] gathering facts"
+    ansible.builtin.setup:
+      gather_subset:
+        - env
+        - dns
+        - network
+        - interfaces
+  
+  - name: "[role.domain] setting DNS for {{ ansible_facts['hostname'] }}"
+    ansible.windows.win_dns_client:
+      adapter_names: '{{ ansible_facts.interfaces[0].connection_name }}'
+      dns_servers: '{{ dns_server }}'
+
+  - name: "[role.domain] joining {{ ansible_facts['hostname'] }} to windows domain"
+    ansible.windows.win_domain_membership:
+      dns_domain_name: "{{ dns_domain_name }}"
+      domain_admin_user: "{{ admin_username }}@{{ dns_domain_name }}"
+      domain_admin_password: "{{ admin_password }}"
+      state: domain
+    register: domain_state
+  
+  - name: "[role.domain] rebooting {{ ansible_facts['hostname'] }}"
+    ansible.windows.win_reboot:
+    when: domain_state.reboot_required
