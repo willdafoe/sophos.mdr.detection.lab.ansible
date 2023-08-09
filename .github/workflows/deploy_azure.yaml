@@ -91,6 +91,6 @@ jobs:
           token: ${{ github.token }}
       - name: Checking if repository was successfully cloned
         run: |
-          ls -la ./workspace
+          ls -la ${{ steps.init.outputs.project_path }}
 
   
