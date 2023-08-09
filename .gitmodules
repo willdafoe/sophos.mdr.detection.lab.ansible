@@ -1,3 +1,0 @@
-[submodule "labs/microsoft_defender"]
-	path = labs/microsoft_defender
-	url = https://github.com/willdafoe/mdr.microsoft.defender.detection_lab.git

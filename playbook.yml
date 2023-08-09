@@ -9,7 +9,4 @@
     terraform_command: plan
   
   tasks:
-    - import_role:
-        name: git
-    - import_role: 
-        name: terraform
+  
