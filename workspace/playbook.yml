@@ -3,23 +3,19 @@
   hosts: localhost
   gather_facts: false
   ignore_errors: true
+  connection: local
   collections:
     - sophos.mdr
   vars:
     deployment_name: '{{ deployment_name }}'
     state: '{{ state }}'
     trusted_ip: '{{ trusted_ip }}'
-    domain_controller_count: '{{ domain_controller_count }}'
-    windows_client_count: '{{ windows_client_count }}'
-    subnet_count: '{{ subnet_count }}'
     admin_username: '{{ admin_username }}'
-    admin_password: '{{ admin_password }}'      
+    admin_password: '{{ admin_password }}'
+    dns_domain_name: '{{ dns_domain_name }}'  
     terraform_variables:
-      enabled: '{{ enabled }}'
       name: '{{ name }}'
       namespace: '{{ namespace }}'
-      environment: '{{ environment }}'
-      stage: '{{ stage }}'
       location: '{{ location }}'
       address_space: '{{ address_space }}'
 
@@ -33,7 +29,7 @@
           import_role:
             name: terraform
           vars:
-            state: absent
+            state: '{{ tf_state }}'
             variables: '{{ terraform_variables }}'
 
       delegate_to: localhost

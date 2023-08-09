@@ -10,6 +10,10 @@ on:
           - microsoft_defender
         required: true
         default: microsoft_defender
+      trusted_ip:
+        type: string
+        description: The IP address to whitelist remote access. Must be provided in CIDR notation. 
+        required: true
       name:
         type: string
         required: true
@@ -57,4 +61,18 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/ansible
         with:
-          playbook: ./workspace/playbook.yml
+          playbookName: './workspace/playbook.yml'
+          requirementsFile: './requirements.yml'
+          verbosity: "vvv"
+          extraVars: |
+            -e deployment_name="${{ github.event.inputs.deployment_name }}" 
+            -e trusted_ip="${{ github.event.inputs.trusted_ip }}" 
+            -e name="${{ github.event.inputs.name }}" 
+            -e namespace="${{ github.event.inputs.namespace }}" 
+            -e state="${{ github.event.inputs.state }}" 
+            -e location="${{ github.event.inputs.location }}" 
+            -e address_space="${{ github.event.inputs.address_space }}" 
+            -e admin_username="${{ github.event.inputs.admin_username }}" 
+            -e admin_password="${{ github.event.inputs.admin_password }}" 
+            -e dns_domain_name="${{ github.event.inputs.dns_domain_name }}" 
+  
