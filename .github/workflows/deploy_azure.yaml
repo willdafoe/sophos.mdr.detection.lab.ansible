@@ -55,7 +55,7 @@ on:
         default: sophos.local
 
 env:
-  microsoft_defender: https://github.com/willdafoe/mdr.microsoft.defender.detection_lab.git
+  microsoft_defender: willdafoe/mdr.microsoft.defender.detection_lab
 
 jobs:
   init:
