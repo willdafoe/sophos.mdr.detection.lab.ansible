@@ -88,8 +88,7 @@ jobs:
         with:
           repository: ${{ steps.init.outputs.repo_uri }}
           path: ${{ steps.init.outputs.project_path }}
-          ssh-key: ${{ secrets.APP_PRIVATE_KEY }}
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{ github.token }}
       - name: Checking if repository was successfully cloned
         run: |
           ls -la ${{ steps.init.outputs.project_path }}
