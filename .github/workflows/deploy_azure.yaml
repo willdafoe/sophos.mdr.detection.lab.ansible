@@ -62,7 +62,6 @@ on:
 
 env:
   microsoft_defender: willdafoe/mdr.microsoft.defender.detection_lab
-  project_path: $
 
 jobs:
   init:
@@ -80,6 +79,9 @@ jobs:
           fi
   deploy:
     runs-on: ubuntu-latest
+    env:
+      repo_uri: ${{ needs.init.outputs.repo_uri }}
+      project_path: ${{ needs.init.outputs.project_path }}
     needs: init
     steps:
       - name: Checkout repository
@@ -87,13 +89,13 @@ jobs:
       - name: Checkout workspace repository
         uses: actions/checkout@v3
         with:
-          repository: ${{ steps.init.outputs.repo_uri }}
-          path: ${{ steps.setvars.outputs.project_path }}
+          repository: ${{ env.repo_uri }}
+          path: ${{ env.project_path }}
           token: ${{ github.token }}
       - name: Checking if repository was successfully cloned
         run: |
-          echo Repo URI: ${{ env.microsoft_defender }} && \
-          echo Project Path: ${{ steps.setvars.outputs.project_path }} && \
-          ls -la ${{ steps.setvars.outputs.project_path }}
+          echo Repo URI: ${{ env.repo_uri }} && \
+          echo Project Path: ${{ env.project_path }} && \
+          ls -la ${{ env.project_path }}
 
   
