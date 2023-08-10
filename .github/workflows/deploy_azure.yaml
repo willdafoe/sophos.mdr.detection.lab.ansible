@@ -84,6 +84,10 @@ jobs:
       project_path: ${{ needs.init.outputs.project_path }}
     needs: init
     steps:
+      - name: Checking environment variables
+        run: |
+          echo repo_uri: ${{ env.repo_uri }} && \
+          echo project_path: ${{ env.project_path }} 
       - name: Checkout repository
         uses: actions/checkout@v3   
       - name: Checkout workspace repository
