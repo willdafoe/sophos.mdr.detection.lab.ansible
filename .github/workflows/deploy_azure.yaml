@@ -85,6 +85,6 @@ jobs:
     #      token: ${{ github.token }}
       - name: Checking if repository was successfully cloned
         run: |
-          echo ${{ steps.setvars.outputs.repo_uri }}
+          echo ${{ env.microsoft_defender }}
 
   
