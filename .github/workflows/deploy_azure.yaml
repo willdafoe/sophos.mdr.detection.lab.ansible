@@ -14,14 +14,17 @@ on:
         type: string
         description: The IP address to whitelist remote access. Must be provided in CIDR notation. 
         required: true
+        default: 0.0.0.0/0
       name:
         type: string
         required: true
         description: A custom name for the deployment label
+        default: github
       namespace:
         type: string
         required: true
         description: A custom namespace for the deployment label
+        default: github actions
       state:
         type: choice
         description: Equivalent to the terraform command. apply = present, destroy = absent, plan = planned
@@ -35,10 +38,12 @@ on:
         type: string
         required: true
         description: The Azure region to deploy to
+        default: eastus
       address_space:
         type: string
         required: true
         description: The address space to use for the virtual network
+        default: 192.168.0.0/16 
       admin_username:
         type: string
         required: true
@@ -48,6 +53,7 @@ on:
         type: string
         required: true
         description: The password for the domain admin account
+        default: P@$$w0rd!
       dns_domai_name:
         type: string
         required: true
