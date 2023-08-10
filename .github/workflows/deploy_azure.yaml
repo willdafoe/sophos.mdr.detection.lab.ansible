@@ -25,6 +25,16 @@ on:
         required: true
         description: A custom namespace for the deployment label
         default: github actions
+      environment:
+        type: choice
+        required: true
+        description: The environment to deploy to
+        options:
+          - dev
+          - prod
+          - test
+          - qa
+        default: prod
       location:
         type: string
         required: true
@@ -73,7 +83,7 @@ jobs:
           fi
   deploy:
     runs-on: ubuntu-latest
-    environment: prod
+    environment: ${{ github.event.inputs.environment }}
     env:
       repo_uri: ${{ needs.init.outputs.repo_uri }}
       project_path: ${{ needs.init.outputs.project_path }}
