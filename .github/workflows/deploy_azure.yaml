@@ -50,7 +50,10 @@ on:
         required: true
         description: The DNS domain name to join
         default: sophos.local
-
+permissions:
+  id-token: write
+  contents: read
+  
 env:
   microsoft_defender: willdafoe/mdr.microsoft.defender.detection_lab
 
