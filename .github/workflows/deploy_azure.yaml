@@ -98,9 +98,9 @@ jobs:
           path: ${{ env.project_path }}
           token: ${{ github.token }}
       - uses: hashicorp/setup-terraform@v2
-      - name: Running terraform init
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}      
+      - name: Running terraform init
         id: init
         working-directory: ${{ env.project_path }}
         run: |
