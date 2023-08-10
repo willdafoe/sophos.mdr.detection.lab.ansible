@@ -62,6 +62,7 @@ on:
 
 env:
   microsoft_defender: willdafoe/mdr.microsoft.defender.detection_lab
+  project_path: $
 
 jobs:
   init:
@@ -91,8 +92,8 @@ jobs:
           token: ${{ github.token }}
       - name: Checking if repository was successfully cloned
         run: |
-          echo ${{ env.microsoft_defender }} && \
-          echo ${{ steps.setvars.outputs.project_path }} && \
+          echo Repo URI: ${{ env.microsoft_defender }} && \
+          echo Project Path: ${{ steps.setvars.outputs.project_path }} && \
           ls -la ${{ steps.setvars.outputs.project_path }}
 
   
