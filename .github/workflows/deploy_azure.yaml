@@ -25,15 +25,15 @@ on:
         required: true
         description: A custom namespace for the deployment label
         default: github actions
-      state:
+      tf_command:
         type: choice
         description: Equivalent to the terraform command. apply = present, destroy = absent, plan = planned
         options:
-          - present
-          - planned
-          - absent
+          - plan
+          - apply
+          - destroy
         required: true
-        default: present
+        default: plan
       location:
         type: string
         required: true
@@ -82,6 +82,11 @@ jobs:
     env:
       repo_uri: ${{ needs.init.outputs.repo_uri }}
       project_path: ${{ needs.init.outputs.project_path }}
+      ANSIBLE_COLLECTIONS_PATH: ./collections
+      ANSIBLE_FORCE_COLOR: False
+      ANSIBLE_STDOUT_CALLBACK: unixy
+      ANSIBLE_LOAD_CALLBACK_PLUGINS: True
+      ANSIBLE_INVENTORY_ENABLED: 'azure_rm'
     needs: init
     steps:
       - name: Checking environment variables
@@ -96,10 +101,8 @@ jobs:
           repository: ${{ env.repo_uri }}
           path: ${{ env.project_path }}
           token: ${{ github.token }}
-      - name: Checking if repository was successfully cloned
+      - name: Checking project path
         run: |
-          echo Repo URI: ${{ env.repo_uri }} && \
-          echo Project Path: ${{ env.project_path }} && \
-          ls -la ${{ env.project_path }}
+          echo ls -lah ${{ env.project_path }}
 
   

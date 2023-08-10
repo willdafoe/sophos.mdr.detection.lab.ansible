@@ -37,11 +37,16 @@ terraform.rc
 *.Rhistory
 
 # Ansible Collections
-**/collections/ansible_collections/ansible*
-**/collections/ansible_collections/ansible.windows*
-**/collections/ansible_collections/cloud*
+**/collections/ansible_collections/*
+
+# Workspace directory
+**/workspace/*
+
 
 # Act ignored files
 my.input
 my.secrets
+
+# Local variables file
+*my_variables.yml
 

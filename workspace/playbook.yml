@@ -25,12 +25,12 @@
           import_role:
             name: git
         
-#        - name: "[ansible.playbook] provisioning infrastructure"
-#          import_role:
-#            name: terraform
-#          vars:
-#            state: '{{ state }}'
-#            variables: '{{ terraform_variables }}'
+        - name: "[ansible.playbook] provisioning infrastructure"
+          import_role:
+            name: terraform
+          vars:
+            state: '{{ state }}'
+            variables: '{{ terraform_variables }}'
 
       delegate_to: localhost
 
