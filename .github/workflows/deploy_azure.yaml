@@ -103,6 +103,7 @@ jobs:
           token: ${{ github.token }}
       - name: Checking project path
         run: |
-          echo ls -lah ${{ env.project_path }}
+          cd ${{ env.project_path }} && \
+          ls -lah
 
   
