@@ -25,15 +25,6 @@ on:
         required: true
         description: A custom namespace for the deployment label
         default: github actions
-      tf_command:
-        type: choice
-        description: Equivalent to the terraform command. apply = present, destroy = absent, plan = planned
-        options:
-          - plan
-          - apply
-          - destroy
-        required: true
-        default: plan
       location:
         type: string
         required: true
@@ -82,11 +73,16 @@ jobs:
     env:
       repo_uri: ${{ needs.init.outputs.repo_uri }}
       project_path: ${{ needs.init.outputs.project_path }}
-      ANSIBLE_COLLECTIONS_PATH: ./collections
+      ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/collections
       ANSIBLE_FORCE_COLOR: False
       ANSIBLE_STDOUT_CALLBACK: unixy
       ANSIBLE_LOAD_CALLBACK_PLUGINS: True
       ANSIBLE_INVENTORY_ENABLED: 'azure_rm'
+      TF_VAR_name: ${{ github.event.inputs.name }}
+      TF_VAR_namespace: ${{ github.event.inputs.namespace }}
+      TF_VAR_location: ${{ github.event.inputs.location }}
+      TF_VAR_address_space: ${{ github.event.inputs.address_space }}
+      TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
     needs: init
     steps:
       - name: Checking environment variables
@@ -101,9 +97,14 @@ jobs:
           repository: ${{ env.repo_uri }}
           path: ${{ env.project_path }}
           token: ${{ github.token }}
-      - name: Checking project path
+      - uses: hashicorp/setup-terraform@v2
+      - name: Running terraform init
+        id: init
+        working-directory: ${{ env.project_path }}
         run: |
-          cd ${{ env.project_path }} && \
-          ls -lah
-
-  
+          terraform init
+      - name: Running terraform plan
+        id: plan
+        working-directory: ${{ env.project_path }}
+        run: |
+          terraform plan -out terraform.plan -input=false

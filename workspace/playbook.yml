@@ -7,12 +7,13 @@
   collections:
     - sophos.mdr
   vars:
+    run_git: true
     #deployment_name: '{{ deployment_name }}'
     #state: '{{ state }}'
     #trusted_ip: '{{ trusted_ip }}'
     #admin_username: '{{ admin_username }}'
     #admin_password: '{{ admin_password }}'
-    #dns_domain_name: '{{ dns_domain_name }}'  
+    #dns_domain_name: '{{ dns_domain_name }}' 
     terraform_variables:
       name: '{{ name }}'
       namespace: '{{ namespace }}'
@@ -24,10 +25,12 @@
         - name: "[ansible.playbook] cloning repository"
           import_role:
             name: git
+          when: run_git == true
         
-        - name: "[ansible.playbook] provisioning infrastructure"
+        - name: "[ansible.playbook] generating template"
           import_role:
             name: terraform
+            tasks_from:  template.yml
           vars:
             state: '{{ state }}'
             variables: '{{ terraform_variables }}'
