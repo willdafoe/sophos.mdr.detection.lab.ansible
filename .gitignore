@@ -50,3 +50,7 @@ my.secrets
 # Local variables file
 *my_variables.yml
 
+# Setup files
+**appId.json
+**assigneeObjectId.json
+**roleAssignment.json
