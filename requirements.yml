@@ -1,5 +1,5 @@
 collections:
   - ansible.windows
-  - cloud.terraform
+  - community.general
   - name: https://github.com/willdafoe/mdr.ansible-galaxy.collection.git
     type: git
