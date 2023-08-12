@@ -131,6 +131,7 @@ jobs:
           playbook: ${{ env.project_path }}/ansible/playbook.yml
           requirements: ${{ github.workspace }}/requirements.yml
           options:
+            --verbose
             --extra-vars project_path="${{ env.project_path }}"
             --extra-vars deployment_name="${{ github.event.inputs.deployment_name }}"
             --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
