@@ -1,5 +1,0 @@
-collections:
-  - ansible.windows
-  - community.general
-  - name: https://github.com/willdafoe/mdr.ansible-galaxy.collection.git
-    type: git

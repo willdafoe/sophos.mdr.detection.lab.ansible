@@ -46,7 +46,7 @@ on:
         default: eastus
       address_space:
         type: string
-        required: true
+        required: false
         description: The address space to use for the virtual network
         default: 192.168.0.0/16 
       admin_username:
@@ -58,10 +58,9 @@ on:
         type: string
         required: true
         description: The password for the domain admin account
-        default: P@$$w0rd!
       dns_domain_name:
         type: string
-        required: true
+        required: false
         description: The DNS domain name to join
         default: sophos.local
 permissions:
@@ -91,16 +90,6 @@ jobs:
     env:
       repo_uri: ${{ needs.init.outputs.repo_uri }}
       project_path: ${{ needs.init.outputs.project_path }}
-      ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/collections
-      ANSIBLE_FORCE_COLOR: False
-      ANSIBLE_STDOUT_CALLBACK: unixy
-      ANSIBLE_LOAD_CALLBACK_PLUGINS: True
-      ANSIBLE_INVENTORY_ENABLED: 'azure_rm'
-      TF_VAR_name: ${{ github.event.inputs.name }}
-      TF_VAR_namespace: ${{ github.event.inputs.namespace }}
-      TF_VAR_location: ${{ github.event.inputs.location }}
-      TF_VAR_address_space: ${{ github.event.inputs.address_space }}
-      TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
       TFE_TOKEN: ${{ secrets.TF_API_TOKEN }}
     needs: init
     steps:
@@ -127,16 +116,17 @@ jobs:
       - name: Run Ansible playbook
         uses: dawidd6/action-ansible-playbook@v2.6.1
         with:
-         # directory: ${{ env.project_path }}/ansible
-          playbook: ${{ env.project_path }}/ansible/playbook.yml
-          requirements: ${{ github.workspace }}/requirements.yml
+          directory: ${{ env.project_path }}/ansible
+          playbook: playbook.yml
+          requirements: requirements.yml
           options:
             --verbose
             --extra-vars project_path="${{ env.project_path }}"
             --extra-vars deployment_name="${{ github.event.inputs.deployment_name }}"
             --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
             --extra-vars name="${{ github.event.inputs.name }}"
-            --extra-vars namespace="${{ github.event.inputs.namespace }}"
+            --extra-vars namespace="${{ env.NAMESPACE }}"
+            --extra-vars stage=${{ env.STAGE }}
             --extra-vars tf_command="${{ github.event.inputs.terraform_command }}"
             --extra-vars location="${{ github.event.inputs.location }}"
             --extra-vars address_space="${{ github.event.inputs.address_space }}"
