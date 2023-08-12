@@ -127,15 +127,15 @@ jobs:
       - name: Run Ansible playbook
         uses: dawidd6/action-ansible-playbook@v2.6.1
         with:
-          directory: ${{ env.project_path }}/ansible
-          playbook: playbook.yml
+         # directory: ${{ env.project_path }}/ansible
+          playbook: ${{ env.project_path }}/ansible/playbook.yml
           requirements: ${{ github.workspace }}/requirements.yml
           options:
             --extra-vars deployment_name="${{ github.event.inputs.deployment_name }}"
             --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
             --extra-vars name="${{ github.event.inputs.name }}"
             --extra-vars namespace="${{ github.event.inputs.namespace }}"
-            --extra-vars terraform_command="${{ github.event.inputs.terraform_command }}"
+            --extra-vars tf_command="${{ github.event.inputs.terraform_command }}"
             --extra-vars location="${{ github.event.inputs.location }}"
             --extra-vars address_space="${{ github.event.inputs.address_space }}"
             --extra-vars admin_username="${{ github.event.inputs.admin_username }}"

@@ -8,6 +8,7 @@
     - sophos.mdr
   vars:
     run_git: true
+    terraform_command: plan
     #deployment_name: '{{ deployment_name }}'
     #state: '{{ state }}'
     #trusted_ip: '{{ trusted_ip }}'
@@ -26,15 +27,6 @@
           import_role:
             name: git
           when: run_git == true
-        
-        - name: "[ansible.playbook] generating template"
-          import_role:
-            name: terraform
-            tasks_from:  template.yml
-          vars:
-            state: '{{ state }}'
-            variables: '{{ terraform_variables }}'
-
       delegate_to: localhost
 
 #- name: "[ansible.play] configuring domain controller"
