@@ -20,15 +20,6 @@ on:
         required: true
         description: A custom name for the deployment label
         default: github
-      terraform_command:
-        type: choice
-        required: true
-        description: The terraform command to run
-        options:
-          - plan
-          - apply
-          - destroy
-        default: plan
       environment:
         type: choice
         required: true
@@ -44,25 +35,21 @@ on:
         required: true
         description: The Azure region to deploy to
         default: eastus
-      address_space:
-        type: string
+      domain_controller_count:
+        type: number
+        description: The number of domain controllers to deploy
         required: false
-        description: The address space to use for the virtual network
-        default: 192.168.0.0/16 
-      admin_username:
-        type: string
-        required: true
-        description: The username for the domain admin account
-        default: sophos
-      admin_password:
-        type: string
-        required: true
-        description: The password for the domain admin account
-      dns_domain_name:
-        type: string
+        default: 1
+      windows_server_count:
+        type: number
+        description: The number of Windows servers to deploy
         required: false
-        description: The DNS domain name to join
-        default: sophos.local
+        default: 0
+      windows_client_count:
+        type: number
+        description: The number of Windows clients to deploy
+        required: false
+        default: 1
 permissions:
   id-token: write
   contents: read
@@ -90,6 +77,7 @@ jobs:
     env:
       repo_uri: ${{ needs.init.outputs.repo_uri }}
       project_path: ${{ needs.init.outputs.project_path }}
+      dns_domain_name: msdefender.lab
       TFE_TOKEN: ${{ secrets.TF_API_TOKEN }}
     needs: init
     steps:
@@ -110,26 +98,50 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Jinja2 Action
+        uses: cuchi/jinja2-action@v1.2.0
+        with:
+          template: ${{ env.project_path }}/templates/config.yml.j2
+          output: ${{ env.project_path }}/config/config.yml
+          variables: |
+            domain_controller_count: ${{ github.event.inputs.domain_controller_count }}
+            windows_server_count: ${{ github.event.inputs.windows_server_count }}
+            windows_client_count: ${{ github.event.inputs.windows_client_count }}
       - uses: hashicorp/setup-terraform@v2
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}      
-      - name: Run Ansible playbook
-        uses: dawidd6/action-ansible-playbook@v2.6.1
-        with:
-          directory: ${{ env.project_path }}/ansible
-          playbook: playbook.yml
-          requirements: requirements.yml
-          options:
-            --verbose
-            --extra-vars project_path="${{ env.project_path }}"
-            --extra-vars deployment_name="${{ github.event.inputs.deployment_name }}"
-            --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
-            --extra-vars name="${{ github.event.inputs.name }}"
-            --extra-vars namespace="${{ env.NAMESPACE }}"
-            --extra-vars stage=${{ env.STAGE }}
-            --extra-vars tf_command="${{ github.event.inputs.terraform_command }}"
-            --extra-vars location="${{ github.event.inputs.location }}"
-            --extra-vars address_space="${{ github.event.inputs.address_space }}"
-            --extra-vars admin_username="${{ github.event.inputs.admin_username }}"
-            --extra-vars admin_password="${{ github.event.inputs.admin_password }}"
-            --extra-vars dns_domain_name="${{ github.event.inputs.dns_domain_name }}"
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}    
+      - id: init
+        working-directory: ${{ env.project_path }}
+        run: |
+          terraform init
+      - id: plan
+        working-directory: ${{ env.project_path }}
+        run: |
+          terraform plan -out terraform.plan -input=false
+        env:
+          TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
+          TF_VAR_name: ${{ github.event.inputs.name }}
+          TF_VAR_namespace: ${{ env.NAMESPACE }}
+          TF_VAR_stage: ${{ env.STAGE }}
+          TF_VAR_location: ${{ github.event.inputs.location }}
+
+      #- name: Run Ansible playbook
+      #  uses: dawidd6/action-ansible-playbook@v2.6.1
+      #  with:
+      #    directory: ${{ env.project_path }}/ansible
+      #    playbook: playbook.yml
+      #    requirements: requirements.yml
+      #    options:
+      #      --verbose
+      #      --extra-vars project_path="${{ env.project_path }}"
+      #      --extra-vars deployment_name="${{ github.event.inputs.deployment_name }}"
+      #      --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
+      #      --extra-vars name="${{ github.event.inputs.name }}"
+      #      --extra-vars namespace="${{ env.NAMESPACE }}"
+      #      --extra-vars stage=${{ env.STAGE }}
+      #      --extra-vars tf_command="${{ github.event.inputs.terraform_command }}"
+      #      --extra-vars location="${{ github.event.inputs.location }}"
+      #      --extra-vars address_space="${{ github.event.inputs.address_space }}"
+      #      --extra-vars admin_username="${{ github.event.inputs.admin_username }}"
+      #      --extra-vars admin_password="${{ github.event.inputs.admin_password }}"
+      #      --extra-vars dns_domain_name="${{ github.event.inputs.dns_domain_name }}"
