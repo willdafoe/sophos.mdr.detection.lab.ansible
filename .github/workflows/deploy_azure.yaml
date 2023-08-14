@@ -102,11 +102,14 @@ jobs:
         uses: cuchi/jinja2-action@v1.2.0
         with:
           template: ${{ env.project_path }}/templates/config.yml.j2
-          output: ${{ env.project_path }}/config/config.yml
+          output_file: ${{ env.project_path }}/config/config.yml
           variables: |
             domain_controller_count: ${{ github.event.inputs.domain_controller_count }}
             windows_server_count: ${{ github.event.inputs.windows_server_count }}
             windows_client_count: ${{ github.event.inputs.windows_client_count }}
+      - id: config_check
+        run: |
+          cat ${{ env.project_path }}/config/config.yml
       - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}    
