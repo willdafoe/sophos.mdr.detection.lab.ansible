@@ -83,10 +83,12 @@ jobs:
       TFE_TOKEN: ${{ secrets.TF_API_TOKEN }}
     needs: init
     steps:
-      - name: Checking environment variables
+      - id: runner_ip
         run: |
-          echo repo_uri: ${{ env.repo_uri }} && \
-          echo project_path: ${{ env.project_path }} 
+          RUNNER_IP=$(curl https://api.ipify.org)
+          if [ "${RUNNER_IP}" ]; then
+            echo "::set-output name=runner_ip::${RUNNER_IP}"
+          fi
       - name: Checkout repository
         uses: actions/checkout@v3   
       - name: Checkout workspace repository
@@ -125,6 +127,7 @@ jobs:
           terraform plan -out terraform.plan -input=false
         env:
           TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
+          TF_VAR_runner_ip: ${{ steps.runner_ip.outputs.runner_ip }}
           TF_VAR_name: ${{ github.event.inputs.name }}
           TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_stage: ${{ env.STAGE }}
@@ -141,11 +144,3 @@ jobs:
           requirements: requirements.yml
           options:
             --verbose
-            --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
-            --extra-vars name="${{ github.event.inputs.name }}"
-            --extra-vars namespace="${{ env.NAMESPACE }}"
-            --extra-vars stage=${{ env.STAGE }}
-            --extra-vars location="${{ github.event.inputs.location }}"
-            --extra-vars address_space="${{ github.event.inputs.address_space }}"
-            --extra-vars admin_username="${{ github.event.inputs.admin_username }}"
-            --extra-vars admin_password="${{ github.event.inputs.admin_password }}"
