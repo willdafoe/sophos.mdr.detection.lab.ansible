@@ -73,7 +73,9 @@ jobs:
           fi
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
+    environment: 
+      name: ${{ github.event.inputs.environment }}
+      url: "https://github.com"
     env:
       repo_uri: ${{ needs.init.outputs.repo_uri }}
       project_path: ${{ needs.init.outputs.project_path }}
