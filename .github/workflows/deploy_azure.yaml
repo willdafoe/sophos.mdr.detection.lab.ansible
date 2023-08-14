@@ -127,24 +127,23 @@ jobs:
           TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_stage: ${{ env.STAGE }}
           TF_VAR_location: ${{ github.event.inputs.location }}
-
-      #- name: Run Ansible playbook
-      #  uses: dawidd6/action-ansible-playbook@v2.6.1
-      #  with:
-      #    directory: ${{ env.project_path }}/ansible
-      #    playbook: playbook.yml
-      #    requirements: requirements.yml
-      #    options:
-      #      --verbose
-      #      --extra-vars project_path="${{ env.project_path }}"
-      #      --extra-vars deployment_name="${{ github.event.inputs.deployment_name }}"
-      #      --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
-      #      --extra-vars name="${{ github.event.inputs.name }}"
-      #      --extra-vars namespace="${{ env.NAMESPACE }}"
-      #      --extra-vars stage=${{ env.STAGE }}
-      #      --extra-vars tf_command="${{ github.event.inputs.terraform_command }}"
-      #      --extra-vars location="${{ github.event.inputs.location }}"
-      #      --extra-vars address_space="${{ github.event.inputs.address_space }}"
-      #      --extra-vars admin_username="${{ github.event.inputs.admin_username }}"
-      #      --extra-vars admin_password="${{ github.event.inputs.admin_password }}"
-      #      --extra-vars dns_domain_name="${{ github.event.inputs.dns_domain_name }}"
+      - id: apply
+        if: steps.plan.outcome == 'success'
+        working-directory: ${{ env.project_path }}
+        run: |
+          terraform apply -input=false terraform.plan
+      - uses: dawidd6/action-ansible-playbook@v2.6.1
+        with:
+          directory: ${{ env.project_path }}/ansible
+          playbook: playbook.yml
+          requirements: requirements.yml
+          options:
+            --verbose
+            --extra-vars trusted_ip="${{ github.event.inputs.trusted_ip }}"
+            --extra-vars name="${{ github.event.inputs.name }}"
+            --extra-vars namespace="${{ env.NAMESPACE }}"
+            --extra-vars stage=${{ env.STAGE }}
+            --extra-vars location="${{ github.event.inputs.location }}"
+            --extra-vars address_space="${{ github.event.inputs.address_space }}"
+            --extra-vars admin_username="${{ github.event.inputs.admin_username }}"
+            --extra-vars admin_password="${{ github.event.inputs.admin_password }}"
