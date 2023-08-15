@@ -19,7 +19,6 @@ on:
         type: choice
         description: The terraform command to run
         options:
-          - plan
           - apply
           - destroy
         default: apply
@@ -118,13 +117,27 @@ jobs:
             domain_controller_count=${{ github.event.inputs.domain_controller_count }}
             windows_server_count=${{ github.event.inputs.windows_server_count }}
             windows_client_count=${{ github.event.inputs.windows_client_count }}
-      - id: config_check
-        run: |
-          cat ${{ env.project_path }}/config/config.yml
       - uses: hashicorp/setup-terraform@v2
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}    
-      - id: terraform
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - id: init
+        working-directory: ${{ env.project_path }}
+        run: |
+          terraform init
+      - id: plan
+        working-directory: ${{ env.project_path }}
+        if: always()
+        run: |
+          terraform plan -input=false
+        env:
+          TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
+          TF_VAR_runner_ip: ${{ steps.runner_ip.outputs.runner_ip }}
+          TF_VAR_name: ${{ github.event.inputs.name }}
+          TF_VAR_namespace: ${{ env.NAMESPACE }}
+          TF_VAR_stage: ${{ env.STAGE }}
+          TF_VAR_location: ${{ github.event.inputs.location }}
+      - id: apply
+        if: steps.plan.outcome == 'success' && github.event.inputs.terraform_command == 'apply'
         working-directory: ${{ env.project_path }}
         run: |
           $Repo = "${{ github.repository }}"
@@ -141,26 +154,15 @@ jobs:
               openssl enc -d -in ./state/terraform.tfstate.enc -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate
             }
           }
-          $planfile=[IO.Path]::Combine($pwd,'terraform.plan')
           $terraformcommand = "${{ github.event.inputs.terraform_command }}"
           $terraformapply=@{$true="true";$false="false"}[($terraformcommand -eq "apply")]
-          $terraformdestroy=@{$true="true";$false="false"}[($terraformcommand -eq "destroy")]
           terraform init
-          $custom_apply_flags = "terraform.plan"
           if ($terraformapply -eq "false"){
             $terraformapply = $false
           }
           if ($terraformapply){
-            terraform plan -input=false -out=$planfile
-            terraform apply $planfile
-          }
-
-          if ($terraformdestroy -eq "false"){
-            $terraformdestroy = $false
-          }
-          if ($terraformdestroy){
-            terraform plan -input=false -destroy -out=$planfile
-            terraform apply $planfile
+            terraform plan -input=false
+            terraform apply -input=false -auto-approve
           }
 
           $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
@@ -168,7 +170,12 @@ jobs:
             openssl enc -in ./terraform.tfstate -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate.enc
           }
 
-          $vm_credentials = terraform output virtual_machine_credentials
+          $vm_username = terraform output admin_username
+          $vm_password = terraform output admin_password
+          $vm_credentials = @{
+            "Admin Username" = $vm_username
+            "Admin Password" = $vm_password
+          }
           echo "$vm_credentials" >> $env:GITHUB_OUTPUT
           echo $env:GITHUB_OUTPUT
         shell: pwsh 
@@ -179,6 +186,47 @@ jobs:
           TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_stage: ${{ env.STAGE }}
           TF_VAR_location: ${{ github.event.inputs.location }}
+      - id: destroy
+        if: steps.plan.outcome == 'success' && github.event.inputs.terraform_command == 'destroy'
+        working-directory: ${{ env.project_path }}
+        run: |
+          $Repo = "${{ github.repository }}"
+          $BaseUri = "https://api.github.com"
+          $ArtifactUri = "$BaseUri/repos/$Repo/actions/artifacts"
+          $Token = "${{ github.token }}" | ConvertTo-SecureString -AsPlainText
+          $RestResponse = Invoke-RestMethod -Authentication Bearer -Uri $ArtifactUri -Token $Token | Select-Object -ExpandProperty artifacts
+          if ($RestResponse){
+            $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "terraformstatefile" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
+            Write-Host "Most recent artifact URI = $MostRecentArtifactURI"
+            if ($MostRecentArtifactURI){
+              Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./state.zip
+              Expand-Archive ./state.zip
+              openssl enc -d -in ./state/terraform.tfstate.enc -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate
+            }
+          }
+          $terraformcommand = "${{ github.event.inputs.terraform_command }}"
+          $terraformdestroy=@{$true="true";$false="false"}[($terraformcommand -eq "destroy")]
+          terraform init
+          if ($terraformdestroy -eq "false"){
+            $terraformdestroy = $false
+          }
+          if ($terraformdestroy){
+            terraform plan -input=false
+            terraform destroy -input=false -auto-approve
+          }
+
+          $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
+          if ($StateExists){
+            openssl enc -in ./terraform.tfstate -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate.enc
+          }
+        shell: pwsh 
+        env:
+          TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
+          TF_VAR_runner_ip: ${{ steps.runner_ip.outputs.runner_ip }}
+          TF_VAR_name: ${{ github.event.inputs.name }}
+          TF_VAR_namespace: ${{ env.NAMESPACE }}
+          TF_VAR_stage: ${{ env.STAGE }}
+          TF_VAR_location: ${{ github.event.inputs.location }}          
       - uses: actions/upload-artifact@v2
         id: statefile
         with:
@@ -186,8 +234,24 @@ jobs:
           path: ${{ env.project_path }}/terraform.tfstate.enc
       - name: notify-microsoft-teams
         uses: Skitionek/notify-microsoft-teams@v1.0.4
+        env:
+          vm_credentials: ${{ GITHUB_OUTPUT.vm_credentials }}
         with:
           webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          raw: >-
+            {
+              "@type": "MessageCard",
+              "@context": "http://schema.org/extensions",
+              "summary": "Terraform Deployment",
+              "sections": [{
+                "activityTitle": "Terraform Deployment is complete!",
+                "activitySubtitle" : "Virtual Machine Credentials",
+                "facts"
+              }]
+              "facts": "Virtual Machine Credentials",
+              "value": "${{ env.vm_credentials }}"
+            }
+          
 
       #- uses: dawidd6/action-ansible-playbook@v2.6.1
       #  with:
