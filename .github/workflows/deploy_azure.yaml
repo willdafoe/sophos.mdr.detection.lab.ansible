@@ -64,14 +64,13 @@ jobs:
       project_path: ${{ steps.setvars.outputs.project_path }}
       repo_uri: ${{ steps.setvars.outputs.repo_uri }}
     steps:
-      - name: define lab to deploy
-        id: setvars
+      - id: setvars
         run: |
           if [ "${{ github.event.inputs.deployment_name }}" == "microsoft_defender" ]; then
             echo "::set-output name=project_path::${{ github.workspace }}/workspace/${{ github.event.inputs.deployment_name }}"
             echo "::set-output name=repo_uri::${{ env.microsoft_defender }}"
           fi
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
     environment: 
       name: ${{ github.event.inputs.environment }}
@@ -117,14 +116,8 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}    
-      - id: init
-        working-directory: ${{ env.project_path }}
-        run: |
-          terraform init
-      - id: plan
-        working-directory: ${{ env.project_path }}
-        run: |
-          terraform plan -out terraform.plan -input=false
+      - uses: sturlabragason/terraform_state_artifact@v1
+        id: terraform
         env:
           TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
           TF_VAR_runner_ip: ${{ steps.runner_ip.outputs.runner_ip }}
@@ -132,15 +125,14 @@ jobs:
           TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_stage: ${{ env.STAGE }}
           TF_VAR_location: ${{ github.event.inputs.location }}
-      - id: apply
-        if: steps.plan.outcome == 'success'
-        working-directory: ${{ env.project_path }}
-        run: |
-          terraform apply -input=false terraform.plan
-      - uses: dawidd6/action-ansible-playbook@v2.6.1
         with:
-          directory: ${{ env.project_path }}/ansible
-          playbook: playbook.yml
-          requirements: requirements.yml
-          options:
-            --verbose
+          encryptionkey: ${{ secrets.encryptionkey }}
+          apply: true
+          custom_plan_flags: '-input=false'
+      #- uses: dawidd6/action-ansible-playbook@v2.6.1
+      #  with:
+      #    directory: ${{ env.project_path }}/ansible
+      #    playbook: playbook.yml
+      #    requirements: requirements.yml
+      #    options:
+      #      --verbose
