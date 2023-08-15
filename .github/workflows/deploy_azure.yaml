@@ -235,7 +235,7 @@ jobs:
       - name: notify-microsoft-teams
         uses: Skitionek/notify-microsoft-teams@v1.0.4
         env:
-          vm_credentials: ${{ GITHUB_OUTPUT.vm_credentials }}
+          vm_credentials: ${{ GITHUB_OUTPUT }}
         with:
           webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           raw: >-
