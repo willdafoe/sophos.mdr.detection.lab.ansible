@@ -141,7 +141,7 @@ jobs:
               openssl enc -d -in ./state/terraform.tfstate.enc -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate
             }
           }
-          $planfile = $pwd/terraform.plan
+          $planfile=[IO.Path]::Combine($pwd,'terraform.plan')
           $terraformcommand = "${{ github.event.inputs.terraform_command }}"
           $terraformapply=@{$true="true";$false="false"}[($terraformcommand -eq "apply")]
           $terraformdestroy=@{$true="true";$false="false"}[($terraformcommand -eq "destroy")]
