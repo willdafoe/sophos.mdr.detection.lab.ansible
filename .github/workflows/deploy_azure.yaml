@@ -152,10 +152,14 @@ jobs:
           if ($terraformapply){
             terraform apply -input=false -auto-approve
           }
+
           $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
           if ($StateExists){
             openssl enc -in ./terraform.tfstate -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate.enc
           }
+
+          $vm_credentials = terraform output virtual_machine_credentials
+          echo "$vm_credentials" >> $env:GITHUB_OUTPUT
         shell: pwsh 
         env:
           TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
@@ -169,6 +173,14 @@ jobs:
         with:
           name: terraformstatefile
           path: ${{ env.project_path }}/terraform.tfstate.enc
+      - name: Microsoft Teams Notification
+        uses: jdcargile/ms-teams-notification@v1.3
+        with:
+          github-token: ${{ github.token }}
+          ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          notification-summary: |
+            Virtual Machine Credentials are: $GITHUB_OUTPUT
+
       #- uses: dawidd6/action-ansible-playbook@v2.6.1
       #  with:
       #    directory: ${{ env.project_path }}/ansible
