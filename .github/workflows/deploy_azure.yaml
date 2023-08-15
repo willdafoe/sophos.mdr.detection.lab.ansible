@@ -116,8 +116,35 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}    
-      - uses: ./.github/actions/terraform_statefile
-        id: terraform
+      - id: terraform
+        working-directory: ${{ env.project_path }}
+        run: |
+          $Repo = "${{ github.repository }}"
+          $BaseUri = "https://api.github.com"
+          $ArtifactUri = "$BaseUri/repos/$Repo/actions/artifacts"
+          $Token = "${{ github.token }}" | ConvertTo-SecureString -AsPlainText
+          $RestResponse = Invoke-RestMethod -Authentication Bearer -Uri $ArtifactUri -Token $Token | Select-Object -ExpandProperty artifacts
+          if ($RestResponse){
+            $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "terraformstatefile" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
+            Write-Host "Most recent artifact URI = $MostRecentArtifactURI"
+            if ($MostRecentArtifactURI){
+              Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./state.zip
+              Expand-Archive ./state.zip
+              openssl enc -d -in ./state/terraform.tfstate.enc -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate
+            }
+          }
+          terraform init
+          $custom_plan_flags = "-out=./terraform.plan -input=false"
+          $custom_apply_flags = "./terraform.plan"
+
+          terraform plan $custom_plan_flags
+          terraform apply $custom_apply_flags
+
+          $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
+          if ($StateExists){
+            openssl enc -in ./terraform.tfstate -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate.enc
+          }
+        shell: pwsh 
         env:
           TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
           TF_VAR_runner_ip: ${{ steps.runner_ip.outputs.runner_ip }}
@@ -125,11 +152,11 @@ jobs:
           TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_stage: ${{ env.STAGE }}
           TF_VAR_location: ${{ github.event.inputs.location }}
+      - uses: actions/upload-artifact@v2
+        id: statefile
         with:
-          encryptionkey: ${{ secrets.encryptionkey }}
-          apply: true
-          custom_plan_flags: '-input=false'
-          working-directory: ${{ env.project_path }}
+          name: terraformstatefile
+          path: ${{ env.project_path }}/terraform.tfstate.enc
       #- uses: dawidd6/action-ansible-playbook@v2.6.1
       #  with:
       #    directory: ${{ env.project_path }}/ansible
