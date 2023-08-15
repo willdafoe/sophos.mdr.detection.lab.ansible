@@ -148,9 +148,9 @@ jobs:
           if ($terraformapply -eq "false"){
             $terraformapply = $false
           }
-          terraform plan -input=false -out=terraform.plan
+          terraform plan -input=false
           if ($terraformapply){
-            terraform apply terraform.plan
+            terraform apply -input=false -auto-approve
           }
           $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
           if ($StateExists){
