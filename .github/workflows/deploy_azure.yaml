@@ -141,16 +141,26 @@ jobs:
               openssl enc -d -in ./state/terraform.tfstate.enc -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate
             }
           }
+          $planfile = $pwd/terraform.plan
           $terraformcommand = "${{ github.event.inputs.terraform_command }}"
           $terraformapply=@{$true="true";$false="false"}[($terraformcommand -eq "apply")]
+          $terraformdestroy=@{$true="true";$false="false"}[($terraformcommand -eq "destroy")]
           terraform init
           $custom_apply_flags = "terraform.plan"
           if ($terraformapply -eq "false"){
             $terraformapply = $false
           }
-          terraform plan -input=false
           if ($terraformapply){
-            terraform apply -input=false -auto-approve
+            terraform plan -input=false -out=$planfile
+            terraform apply $planfile
+          }
+
+          if ($terraformdestroy -eq "false"){
+            $terraformdestroy = $false
+          }
+          if ($terraformdestroy){
+            terraform plan -input=false -destroy -out=$planfile
+            terraform apply $planfile
           }
 
           $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
