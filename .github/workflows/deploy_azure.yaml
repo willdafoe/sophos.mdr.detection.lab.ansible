@@ -120,23 +120,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - id: init
-        working-directory: ${{ env.project_path }}
-        run: |
-          terraform init
-      - id: plan
-        working-directory: ${{ env.project_path }}
-        run: |
-          terraform plan -input=false
-        env:
-          TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
-          TF_VAR_runner_ip: ${{ steps.runner_ip.outputs.runner_ip }}
-          TF_VAR_name: ${{ github.event.inputs.name }}
-          TF_VAR_namespace: ${{ env.NAMESPACE }}
-          TF_VAR_stage: ${{ env.STAGE }}
-          TF_VAR_location: ${{ github.event.inputs.location }}
       - id: apply
-        if: steps.plan.outcome == 'success'
         working-directory: ${{ env.project_path }}
         run: |
           $Repo = "${{ github.repository }}"
