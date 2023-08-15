@@ -116,7 +116,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}    
-      - uses: sturlabragason/terraform_state_artifact@v1
+      - uses: ./.github/actions/terraform_statefile
         id: terraform
         env:
           TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
@@ -129,6 +129,7 @@ jobs:
           encryptionkey: ${{ secrets.encryptionkey }}
           apply: true
           custom_plan_flags: '-input=false'
+          working-directory: ${{ env.project_path }}
       #- uses: dawidd6/action-ansible-playbook@v2.6.1
       #  with:
       #    directory: ${{ env.project_path }}/ansible
