@@ -15,6 +15,14 @@ on:
         description: The IP address to whitelist remote access. Must be provided in CIDR notation. 
         required: true
         default: 0.0.0.0/0
+      terraform_command:
+        type: choice
+        description: The terraform command to run
+        options:
+          - plan
+          - apply
+          - destroy
+        default: apply
       name:
         type: string
         required: true
@@ -133,16 +141,16 @@ jobs:
               openssl enc -d -in ./state/terraform.tfstate.enc -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate
             }
           }
+          $terraformcommand = "${{ github.event.inputs.terraform_command }}"
+          $terraformapply=@{$true="true";$false="false"}[($terraformcommand -eq "apply")]
           terraform init
-          $terraformapply="true"
-          $custom_plan_flags = "-out=terraform.plan -input=false"
           $custom_apply_flags = "terraform.plan"
           if ($terraformapply -eq "false"){
             $terraformapply = $false
           }
-          terraform plan $custom_plan_flags
+          terraform plan -input=false -out=terraform.plan
           if ($terraformapply){
-            terraform apply $custom_apply_flags
+            terraform apply terraform.plan
           }
           $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
           if ($StateExists){
