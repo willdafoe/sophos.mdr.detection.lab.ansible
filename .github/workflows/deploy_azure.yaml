@@ -134,12 +134,16 @@ jobs:
             }
           }
           terraform init
-          $custom_plan_flags = "-out=./terraform.plan -input=false"
-          $custom_apply_flags = "./terraform.plan"
-
+          $terraformapply="true"
+          $custom_plan_flags = "-out=terraform.plan -input=false"
+          $custom_apply_flags = "terraform.plan"
+          if ($terraformapply -eq "false"){
+            $terraformapply = $false
+          }
           terraform plan $custom_plan_flags
-          terraform apply $custom_apply_flags
-
+          if ($terraformapply){
+            terraform apply $custom_apply_flags
+          }
           $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
           if ($StateExists){
             openssl enc -in ./terraform.tfstate -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate.enc
