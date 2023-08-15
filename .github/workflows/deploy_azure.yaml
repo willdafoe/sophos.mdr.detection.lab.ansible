@@ -126,7 +126,6 @@ jobs:
           terraform init
       - id: plan
         working-directory: ${{ env.project_path }}
-        if: always()
         run: |
           terraform plan -input=false
         env:
@@ -137,7 +136,7 @@ jobs:
           TF_VAR_stage: ${{ env.STAGE }}
           TF_VAR_location: ${{ github.event.inputs.location }}
       - id: apply
-        if: steps.plan.outcome == 'success' && github.event.inputs.terraform_command == 'apply'
+        if: steps.plan.outcome == 'success'
         working-directory: ${{ env.project_path }}
         run: |
           $Repo = "${{ github.repository }}"
@@ -185,48 +184,7 @@ jobs:
           TF_VAR_name: ${{ github.event.inputs.name }}
           TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_stage: ${{ env.STAGE }}
-          TF_VAR_location: ${{ github.event.inputs.location }}
-      - id: destroy
-        if: steps.plan.outcome == 'success' && github.event.inputs.terraform_command == 'destroy'
-        working-directory: ${{ env.project_path }}
-        run: |
-          $Repo = "${{ github.repository }}"
-          $BaseUri = "https://api.github.com"
-          $ArtifactUri = "$BaseUri/repos/$Repo/actions/artifacts"
-          $Token = "${{ github.token }}" | ConvertTo-SecureString -AsPlainText
-          $RestResponse = Invoke-RestMethod -Authentication Bearer -Uri $ArtifactUri -Token $Token | Select-Object -ExpandProperty artifacts
-          if ($RestResponse){
-            $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "terraformstatefile" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
-            Write-Host "Most recent artifact URI = $MostRecentArtifactURI"
-            if ($MostRecentArtifactURI){
-              Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./state.zip
-              Expand-Archive ./state.zip
-              openssl enc -d -in ./state/terraform.tfstate.enc -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate
-            }
-          }
-          $terraformcommand = "${{ github.event.inputs.terraform_command }}"
-          $terraformdestroy=@{$true="true";$false="false"}[($terraformcommand -eq "destroy")]
-          terraform init
-          if ($terraformdestroy -eq "false"){
-            $terraformdestroy = $false
-          }
-          if ($terraformdestroy){
-            terraform plan -input=false
-            terraform destroy -input=false -auto-approve
-          }
-
-          $StateExists = Test-Path -Path ./terraform.tfstate -PathType Leaf
-          if ($StateExists){
-            openssl enc -in ./terraform.tfstate -aes-256-cbc -pbkdf2 -pass pass:"${{ secrets.encryptionkey }}" -out ./terraform.tfstate.enc
-          }
-        shell: pwsh 
-        env:
-          TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
-          TF_VAR_runner_ip: ${{ steps.runner_ip.outputs.runner_ip }}
-          TF_VAR_name: ${{ github.event.inputs.name }}
-          TF_VAR_namespace: ${{ env.NAMESPACE }}
-          TF_VAR_stage: ${{ env.STAGE }}
-          TF_VAR_location: ${{ github.event.inputs.location }}          
+          TF_VAR_location: ${{ github.event.inputs.location }}        
       - uses: actions/upload-artifact@v2
         id: statefile
         with:
@@ -234,7 +192,7 @@ jobs:
           path: ${{ env.project_path }}/terraform.tfstate.enc
       - name: notify-microsoft-teams
         uses: Skitionek/notify-microsoft-teams@v1.0.4
-        if: steps.apply.outcome == 'success' && github.event.inputs.terraform_command == 'apply'
+        if: steps.apply.outcome == 'success'
         env:
           vm_credentials: ${{ steps.apply.outputs.vm_credentials }}
         with:
