@@ -173,11 +173,11 @@ jobs:
           $vm_username = terraform output admin_username
           $vm_password = terraform output admin_password
           $vm_credentials = @{
-            "Admin Username" = $vm_username
-            "Admin Password" = $vm_password
+            "username" = $vm_username
+            "password" = $vm_password
           }
-          echo "$vm_credentials" >> $env:GITHUB_OUTPUT
-          echo $env:GITHUB_OUTPUT
+
+          echo "::set-output name=vm_credentials::${vm_credentials}"
         shell: pwsh 
         env:
           TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
@@ -234,8 +234,9 @@ jobs:
           path: ${{ env.project_path }}/terraform.tfstate.enc
       - name: notify-microsoft-teams
         uses: Skitionek/notify-microsoft-teams@v1.0.4
+        if: steps.apply.outcome == 'success' && github.event.inputs.terraform_command == 'apply'
         env:
-          vm_credentials: ${{ GITHUB_OUTPUT }}
+          vm_credentials: ${{ steps.apply.outputs.vm_credentials }}
         with:
           webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           raw: >-
