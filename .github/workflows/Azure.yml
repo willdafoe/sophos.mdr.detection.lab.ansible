@@ -82,5 +82,23 @@ jobs:
           variables: |
             domain_controller_count=${{ github.event.inputs.domain_controller_count }}
             windows_server_count=${{ github.event.inputs.windows_server_count }}
-            windows_client_count=${{ github.event.inputs.windows_client_count }}            
-
+            windows_client_count=${{ github.event.inputs.windows_client_count }} 
+      - name: Running Terraform init
+        id: init
+        working-directory: ${{ env.project_path }}    
+        shell: bash
+        run: |
+          terraform init
+      - name: Running Terraform Plan
+        id: plan
+        working-directory: ${{ env.project_path }}
+        shell: bash
+        run: |
+          echo 'plan<<EOF' >> $GITHUB_OUTPUT
+          terraform plan -out terraform.plan >>$GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+      - name: Checking outputs
+        id: outputs
+        shell: bash
+        run: |
+          echo "${{  steps.plan.outputs.plan }}"
