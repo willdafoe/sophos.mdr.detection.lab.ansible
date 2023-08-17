@@ -2,6 +2,14 @@ name: Azure
 
 on:
   workflow_dispatch:
+    inputs:
+      deployment_name:
+        type: choice
+        description: Lab to run
+        options:
+          - microsoft_defender
+        required: true
+        default: microsoft_defender
 permissions:
   id-token: write
   contents: read
