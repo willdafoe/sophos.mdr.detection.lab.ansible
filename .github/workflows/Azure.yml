@@ -52,17 +52,17 @@ jobs:
       project_path: ${{ needs.which_lab.outputs.project_path }}
     steps:
       - name: Checking out ${{ github.repository }}
-        id: step1
+        id: checkout
         uses: actions/checkout@v3
       - name: Checking out repository for ${{ github.event.inputs.deployment_name }}
-        id: step2
+        id: workspace_checkout
         uses: actions/checkout@v3
         with:
           repository: ${{ env.repo_uri }}
           path: ${{ env.project_path }}
           ssh-key: ${{ secrets.DEPLOY_KEY }}        
       - name: Login to Azure
-        id: step3
+        id: az_logon
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -72,5 +72,15 @@ jobs:
         id: tf_setup
         uses: hashicorp/setup-terraform@v2
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}          
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}        
+      - name: Generate configuration template
+        id: config
+        uses: cuchi/jinja2-action@v1.2.0
+        with:
+          template: ${{ env.project_path }}/templates/config.yml.j2
+          output_file: ${{ env.project_path }}/config/config.yml
+          variables: |
+            domain_controller_count=${{ github.event.inputs.domain_controller_count }}
+            windows_server_count=${{ github.event.inputs.windows_server_count }}
+            windows_client_count=${{ github.event.inputs.windows_client_count }}            
 
