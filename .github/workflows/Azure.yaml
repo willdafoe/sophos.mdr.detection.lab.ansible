@@ -189,10 +189,11 @@ jobs:
               "sections": [{
                 "activityTitle": "Terraform Deployment is complete!",
                 "activitySubtitle" : "Virtual Machine Credentials",
-                "facts"
+                "facts":[{
+                  "name": "Virtual Machine Credentials",
+                  "value": "${{ env.vm_credentials }}"
+                }] 
               }]
-              "facts": "Virtual Machine Credentials",
-              "value": "${{ env.vm_credentials }}"
             }
           
 
