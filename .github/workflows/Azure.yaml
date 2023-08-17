@@ -77,6 +77,14 @@ jobs:
             echo "::set-output name=project_path::${{ github.workspace }}/workspace/${{ github.event.inputs.deployment_name }}"
             echo "::set-output name=repo_uri::${{ env.microsoft_defender }}"
           fi
+  azure:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}    
   terraform:
     runs-on: ubuntu-latest
     environment: 
@@ -103,11 +111,6 @@ jobs:
           repository: ${{ env.repo_uri }}
           path: ${{ env.project_path }}
           ssh-key: ${{ secrets.DEPLOY_KEY }}
-      - uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Jinja2 Action
         uses: cuchi/jinja2-action@v1.2.0
         with:
