@@ -159,8 +159,6 @@ jobs:
             "username" = $vm_username
             "password" = $vm_password
           }
-
-          echo "::set-output name=vm_credentials::${vm_credentials}"
         shell: pwsh 
         env:
           TF_VAR_trusted_ip: ${{ github.event.inputs.trusted_ip }}
