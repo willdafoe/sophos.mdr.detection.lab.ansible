@@ -31,7 +31,7 @@ jobs:
             echo "::set-output name=repo_uri::${{ env.microsoft_defender }}"
           fi        
 
-  azure_login:
+  terraform_deploy:
     runs-on: ubuntu-latest
     needs: which_lab
     environment:
@@ -41,24 +41,33 @@ jobs:
       repo_uri: ${{ needs.which_lab.outputs.repo_uri }}
       project_path: ${{ needs.which_lab.outputs.project_path }}
     steps:
+      - id: runner_ip
+        run: |
+          RUNNER_IP=$(curl https://api.ipify.org)
+          if [ "${RUNNER_IP}" ]; then
+            echo "runner_ip=${RUNNER_IP}" >>$GITHUB_OUTPUT
+          fi
       - id: checkout
         uses: actions/checkout@v3
-      - uses: azure/login@v1
+      - id: checkout_lab
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.repo_uri }}
+          path: ${{ env.project_path }}
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+      - id: setup_terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - id: azure
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  
-  azure_commands:
-    runs-on: ubuntu-latest
-    needs: azure_login
-    environment:
-      name: ${{ github.event.inputs.environment }}
-    steps:
-      - id: azcli
-        uses: azure/CLI@v1
+      - id: config
+        uses: cuchi/jinja2-action@v1.2.0
         with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
+          template: ${{ env.project_path }}/templates/config.yml.j2
+          output_file: ${{ env.project_path }}/config/config.yml
 
