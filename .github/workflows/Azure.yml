@@ -19,7 +19,7 @@ env:
 
 jobs:
   which_lab:
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-latest
     outputs:
       project_path: ${{ steps.setvars.outputs.project_path }}
       repo_uri: ${{ steps.setvars.outputs.repo_uri }}
