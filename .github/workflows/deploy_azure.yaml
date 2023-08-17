@@ -74,8 +74,8 @@ jobs:
       - id: setvars
         run: |
           if [ "${{ github.event.inputs.deployment_name }}" == "microsoft_defender" ]; then
-            echo "::set-output name=project_path::${{ github.workspace }}/workspace/${{ github.event.inputs.deployment_name }}"
-            echo "::set-output name=repo_uri::${{ env.microsoft_defender }}"
+            echo "project_path=${{ github.workspace }}/workspace/${{ github.event.inputs.deployment_name }}" >>$GITHUB_OUTPUT
+            echo "repo_uri=${{ env.microsoft_defender }}" >>$GITHUB_OUTPUT
           fi
   terraform:
     runs-on: ubuntu-latest
