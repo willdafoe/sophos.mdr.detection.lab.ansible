@@ -33,7 +33,7 @@ jobs:
       repo_uri: ${{ needs.which_lab.outputs.repo_uri }}
       project_path: ${{ needs.which_lab.outputs.project_path }}
     steps:
-      - id: checkout.azure_login
+      - id: checkout
         uses: actions/checkout@v3
       - uses: azure/login@v1
         with:
@@ -47,7 +47,7 @@ jobs:
     environment:
       name: ${{ github.event.inputs.environment }}
     steps:
-      - id: az.commands
+      - id: azcli
         uses: azure/CLI@v1
         with:
           azcliversion: latest
