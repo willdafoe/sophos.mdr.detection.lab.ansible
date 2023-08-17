@@ -133,11 +133,15 @@ fi
 MY_CLIENT_ID=$(az ad sp list --display-name $MY_APP_NAME | jq -r '.[].appId')
 
 echo " Creating federated credentials for GitHub OAuth "
-read -p "Enter the GitHub repo you would like to create credentials for. E.G. <repo owner>/<repository name>: " github_repository
+read -p "Enter the GitHub repository name (Do not include the full https or ssh path. Just the name of the repository): " repository_name
+read -p "Enter the name you would like to use for the Federated Credentials: " credential_name
+
+$repository="$owner/$repository_name"
+$github_repository="$repository:ref:refs/heads/main"
 
 json_string=$(
     jq --null-input \
-        --arg name "$MY_APP_NAME" \
+        --arg name "$credential_name" \
         --arg subject "$github_repository" \
         '{ name: $name, issuer: "https://token.actions.githubusercontent.com", subject: $subject, description: "Github Actions", audiences: ["api://AzureADTokenExchange"]}'
 )

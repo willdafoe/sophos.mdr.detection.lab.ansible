@@ -10,6 +10,16 @@ on:
           - microsoft_defender
         required: true
         default: microsoft_defender
+      environment:
+        type: choice
+        description: GitHub deployment environment
+        options:
+          - prod
+          - dev
+          - qa
+          - test
+        required: true
+        default: prod
 permissions:
   id-token: write
   contents: read
