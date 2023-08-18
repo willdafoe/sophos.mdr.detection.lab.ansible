@@ -86,6 +86,10 @@ jobs:
       project_path: ${{ steps.setvars.outputs.project_path }}
       repo_uri: ${{ steps.setvars.outputs.repo_uri }}
     steps:
+      - name: Hide sensitive inputs
+        uses: levibostian/action-hide-sensitive-inputs@v1    
+        with:
+          exclude_inputs: deployment_name, environment, name, admin_username, trusted_ip, domain_controller_count, windows_server_count,windows_client_count, location
       - id: setvars
         run: |
           if [ "${{ github.event.inputs.deployment_name }}" == "microsoft_defender" ]; then
@@ -96,7 +100,7 @@ jobs:
         run: |
           RUNNER_IP=$(curl https://api.ipify.org)/32
           if [ "$RUNNER_IP" ]; then
-            echo "runner_ip=${RUNNER_IP}" >> $GITHUB_OUTPUT
+            echo "runner_ip=${RUNNER_IP}" >>$GITHUB_OUTPUT
           fi       
 
   deploy:
@@ -118,9 +122,6 @@ jobs:
       trusted_ip: ${{ github.event.inputs.trusted_ip }}
       runner_ip: ${{ needs.which_lab.outputs.runner_ip }}
     steps:
-      - id: github_env
-        run: |
-          echo $GITHUB_ENV
       - name: Checking out ${{ github.repository }}
         id: checkout
         uses: actions/checkout@v3
@@ -169,9 +170,9 @@ jobs:
           && terraform show -no-color terraform.plan
         env:
           TF_VAR_name: ${{ env.name }}
-          TF_VAR_namespace: ${{ env.NAMESPACE }}
+          TF_VAR_namespace: ${{ secrets.NAMESPACE }}
           TF_VAR_environment: ${{ env.environment }}
-          TF_VAR_stage: ${{ env.STAGE }}
+          TF_VAR_stage: ${{ secrets.STAGE }}
           TF_VAR_location: ${{ env.location }}
           TF_VAR_admin_username: ${{ env.admin_username }}
           TF_VAR_admin_password: ${{ env.admin_password }}
