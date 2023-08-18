@@ -7,4 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dump context
-        uses: crazy-max/ghaction-dump-context@v2    
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "${{ GITHUB_CONTEXT }}"
