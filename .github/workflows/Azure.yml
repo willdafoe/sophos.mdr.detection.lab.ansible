@@ -116,7 +116,7 @@ jobs:
       admin_username: ${{ github.event.inputs.admin_username }}
       admin_password: ${{ github.event.inputs.admin_password }}
       trusted_ip: ${{ github.event.inputs.trusted_ip }}
-      runner_ip: ${{ env.runner_ip }}
+      runner_ip: ${{ needs.which_lab.outputs.runner_ip }}
     steps:
       - name: Checking out ${{ github.repository }}
         id: checkout
