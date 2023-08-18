@@ -51,7 +51,7 @@ on:
       windows_server_count:
         type: number
         description: |
-          (Optional) The number of Windows Servers to provision. The default value is `0`.
+          (Optional) The number of Windows Servers to provision. The default value is `0`
         default: 0
       windows_client_count:
         type: number
@@ -89,8 +89,8 @@ jobs:
       - id: setvars
         run: |
           if [ "${{ github.event.inputs.deployment_name }}" == "microsoft_defender" ]; then
-            echo "::set-output name=project_path::${{ github.workspace }}/workspace/${{ github.event.inputs.deployment_name }}"
-            echo "::set-output name=repo_uri::${{ env.microsoft_defender }}"
+            echo "project_path=${{ github.workspace }}/workspace/${{ github.event.inputs.deployment_name }}" >> $GITHUB_OUTPUT
+            echo "repo_uri=${{ env.microsoft_defender }}" >> $GITHUB_OUTPUT
           fi
       - id: runner_ip
         run: |
@@ -161,6 +161,7 @@ jobs:
           terraform init
       - name: Running Terraform Plan
         id: plan
+        continue-on-error: true
         working-directory: ${{ env.project_path }}
         shell: bash
         run: |
@@ -168,10 +169,28 @@ jobs:
           && terraform show -no-color terraform.plan
         env:
           TF_VAR_name: ${{ env.name }}
-          TF_VAR_namespace: ${{ env.namespace }}
+          TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_environment: ${{ env.environment }}
-          TF_VAR_stage: ${{ env.stage }}
+          TF_VAR_stage: ${{ env.STAGE }}
           TF_VAR_location: ${{ env.location }}
           TF_VAR_admin_username: ${{ env.admin_username }}
           TF_VAR_admin_password: ${{ env.admin_password }}
           TF_VAR_trusted_ips: '["${{ env.trusted_ip }}" , "${{ env.runner_ip }}"]'
+      - name: Reformat Plan
+        if: steps.plan.outcome == 'success'
+        run: |
+          echo '${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}' \
+          | sed -E 's/^([[:space:]]+)([-+])/\2\1/g' > plan.txt 
+      - name: Put Plan in GITHUB_ENV environment variable
+        if: steps.plan.outcome == 'success'
+        run: |
+          PLAN=$(cat plan.txt)
+          echo "PLAN<<EOF" >> $GITHUB_ENV
+          echo "$PLAN" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV 
+      - name: Plan Failure
+        if: steps.plan.outcome == 'failure'
+        run: |
+          echo '${{ steps.plan.outputs.stderr }}'
+
+
