@@ -5,14 +5,16 @@ on:
     inputs:
       deployment_name:
         type: choice
-        description: Lab to run
+        description: | 
+          (Required) Which lab Environment to run.
         options:
           - microsoft_defender
         required: true
         default: microsoft_defender
       environment:
         type: choice
-        description: GitHub deployment environment
+        description: | 
+          (Optional) GitHub deployment environment. This sets the default values for the namespace and stage labels used in the naming convention contexts with the Terraform Modules.
         options:
           - prod
           - dev
@@ -20,6 +22,54 @@ on:
           - test
         required: true
         default: prod
+      name:
+        type: string
+        description: |
+          (Optional) A name label to attach to the deployed lab. Used in the label context for the naming convention of the provisioned resources.
+        required: false
+      admin_username:
+        type: string
+        description: |
+          (Required) A supplied username to use for provisioning the virtual machines in the lab environment.
+        required: true
+      admin_password:
+        type: string
+        description: |
+          (Required) A supplied password to use for provisioning the virtual machines in the lab environment.
+        required: true
+      trusted_ip:
+        type: string
+        description: |
+          (Optional) Your local public IP address. This value is used in the Security Group rule definitions and will allow remote access from your system to the remote virtual machine environment. Must be supplied in CIDR notation. EG:  'X.X.X.X/32'
+        required: false
+      domain_controller_count:
+        type: number
+        description: |
+          (Optional) The number of Domain Controllers to provision. The default value is `1`. 
+        required: false
+        default: 1
+      windows_server_count:
+        type: number
+        description: |
+          (Optional) The number of Windows Servers to provision. The default value is `0`.
+      windows_client_count:
+        type: number
+        description: |
+          (Optional) The number of Windows Clients to provision. The default value is `1`.
+      location:
+        type: choice
+        description: |
+          (Required) The Azure region to deploy the Lab environment to.
+        options:
+          - centralus
+          - eastus
+          - eastus2
+          - southcentralus
+          - westcentralus
+          - westus
+          - westus2
+        required: true
+        default: southcentralus
 permissions:
   id-token: write
   contents: read
@@ -39,6 +89,12 @@ jobs:
           if [ "${{ github.event.inputs.deployment_name }}" == "microsoft_defender" ]; then
             echo "::set-output name=project_path::${{ github.workspace }}/workspace/${{ github.event.inputs.deployment_name }}"
             echo "::set-output name=repo_uri::${{ env.microsoft_defender }}"
+          fi
+      - id: runner_ip
+        run: |
+          RUNNER_IP=$(curl https://api.ipify.org)/32
+          if [ "$RUNNER_IP" ]; then
+            echo "runner_ip=${RUNNER_IP}" >> $GITHUB_OUTPUT
           fi        
 
   infra_provision:
@@ -50,6 +106,15 @@ jobs:
     env:
       repo_uri: ${{ needs.which_lab.outputs.repo_uri }}
       project_path: ${{ needs.which_lab.outputs.project_path }}
+      name: ${{ github.event.inputs.name }}
+      namespace: ${{ env.NAMESPACE }}
+      location: ${{ github.event.inputs.location }}
+      environment: ${{ github.event.inputs.environment }}
+      stage: ${{ env.STAGE }}
+      admin_username: ${{ github.event.inputs.admin_username }}
+      admin_password: ${{ github.event.inputs.admin_password }}
+      trusted_ip: ${{ github.event.inputs.trusted_ip }}
+      runner_ip: ${{ env.runner_ip }}
     steps:
       - name: Checking out ${{ github.repository }}
         id: checkout
@@ -94,11 +159,13 @@ jobs:
         working-directory: ${{ env.project_path }}
         shell: bash
         run: |
-          echo 'plan<<EOF' >> $GITHUB_OUTPUT
-          terraform plan -no-color -out=terraform.plan >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
-      - name: Checking outputs
-        id: outputs
-        shell: bash
-        run: |
-          echo "${{  steps.plan.outputs.plan }}"
+          terraform plan -input=false -no-color -out=terraform.plan \
+          && terraform show -no-color terraform.plan
+        env:
+          TF_VAR_name: ${{ env.name }}
+          TF_VAR_namespace: ${{ env.namespace }}
+          TF_VAR_environment: ${{ env.environment }}
+          TF_VAR_stage: ${{ env.stage }}
+          TF_VAR_admin_username: ${{ env.admin_username }}
+          TF_VAR_admin_password: ${{ env.admin_password }}
+          TF_VAR_trusted_ips: '["${{ env.trusted_ip }}" , "${{ env.runner_ip }}"]'
