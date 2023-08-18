@@ -95,7 +95,7 @@ jobs:
         shell: bash
         run: |
           echo 'plan<<EOF' >> $GITHUB_OUTPUT
-          terraform plan -out terraform.plan >>$GITHUB_OUTPUT
+          terraform plan -no-color -out=terraform.plan >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
       - name: Checking outputs
         id: outputs
