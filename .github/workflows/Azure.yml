@@ -52,10 +52,12 @@ on:
         type: number
         description: |
           (Optional) The number of Windows Servers to provision. The default value is `0`.
+        default: 0
       windows_client_count:
         type: number
         description: |
           (Optional) The number of Windows Clients to provision. The default value is `1`.
+        default: 1
       location:
         type: choice
         description: |
@@ -107,10 +109,10 @@ jobs:
       repo_uri: ${{ needs.which_lab.outputs.repo_uri }}
       project_path: ${{ needs.which_lab.outputs.project_path }}
       name: ${{ github.event.inputs.name }}
-      namespace: ${{ env.NAMESPACE }}
+      namespace: $GITHUB_ENV
       location: ${{ github.event.inputs.location }}
       environment: ${{ github.event.inputs.environment }}
-      stage: ${{ env.STAGE }}
+      stage: $GITHUB_ENV
       admin_username: ${{ github.event.inputs.admin_username }}
       admin_password: ${{ github.event.inputs.admin_password }}
       trusted_ip: ${{ github.event.inputs.trusted_ip }}
