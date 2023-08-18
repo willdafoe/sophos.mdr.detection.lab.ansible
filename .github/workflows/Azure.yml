@@ -176,7 +176,7 @@ jobs:
           TF_VAR_location: ${{ env.location }}
           TF_VAR_admin_username: ${{ env.admin_username }}
           TF_VAR_admin_password: ${{ env.admin_password }}
-          TF_VAR_trusted_ips: '["${{ env.trusted_ip }}" , "${{ env.runner_ip }}"]'
+          TF_VAR_trusted_ips: '["${{ env.trusted_ip }}" , "${{ needs.which_lab.outputs.runner_ip }}"]'
       - name: Reformat Plan
         if: steps.plan.outcome == 'success'
         run: |
