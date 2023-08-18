@@ -97,9 +97,9 @@ jobs:
           RUNNER_IP=$(curl https://api.ipify.org)/32
           if [ "$RUNNER_IP" ]; then
             echo "runner_ip=${RUNNER_IP}" >> $GITHUB_OUTPUT
-          fi        
+          fi       
 
-  infra_provision:
+  deploy:
     runs-on: ubuntu-latest
     needs: which_lab
     environment:
@@ -118,6 +118,9 @@ jobs:
       trusted_ip: ${{ github.event.inputs.trusted_ip }}
       runner_ip: ${{ needs.which_lab.outputs.runner_ip }}
     steps:
+      - id: github_env
+        run: |
+          echo $GITHUB_ENV
       - name: Checking out ${{ github.repository }}
         id: checkout
         uses: actions/checkout@v3
