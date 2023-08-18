@@ -21,6 +21,8 @@ function die {
     exit 1
 }
 
+function apiCall(){}
+
 function getMostRecentArtifact(){
     baseUri="https://api.github.com"
     artifactUri="$baseUri/repos/$repo/actions/artifacts"
@@ -33,14 +35,12 @@ function getMostRecentArtifact(){
     
     if  [ -n "$response" ]; then
         most_recent_artifact=$( echo "$response" | jq --arg name "$artifact_name" '.artifacts | map(select(.name == "'$artifact_name'")) | sort_by(.created_at) | reverse')
+        archive_download_url=$(echo "$most_recent_artifact" | jq -r 'first(.[] | .archive_download_url)')
+        echo "$archive_download_url"
     else
         echo "No artifacts were found."
         exit 0
     fi
-
-    archive_download_url=$(echo "$most_recent_artifact" | jq -r 'first(.[] | .archive_download_url)')
-    
-    echo "Most recent artifact_download_url is: $archive_download_url"
 }
 
 if [[ -z $token ]]; then
