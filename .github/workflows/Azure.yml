@@ -153,6 +153,13 @@ jobs:
             domain_controller_count=${{ github.event.inputs.domain_controller_count }}
             windows_server_count=${{ github.event.inputs.windows_server_count }}
             windows_client_count=${{ github.event.inputs.windows_client_count }} 
+      - name: Checking for existing statefile artifact
+        id: artifact
+        working-directory: ${{ env.project_path }}
+        run: |
+          ./scripts/getArtifact.sh \
+            --token ${{ github.token }} \
+            --repo ${{ github.repo }} 
       - name: Running Terraform init
         id: init
         working-directory: ${{ env.project_path }}    

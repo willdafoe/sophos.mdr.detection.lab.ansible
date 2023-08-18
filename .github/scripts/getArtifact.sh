@@ -2,6 +2,7 @@
 repo="${repo:-default ""}"
 token="${token:-default ""}"
 artifact_name="${artifact_name:-default ""}"
+output_directory="${output_directory:-default $(pwd)}"
 scriptname=$0
 
 function usage {
@@ -21,22 +22,30 @@ function die {
     exit 1
 }
 
-function apiCall(){}
+function makeApiCall(){
+    local url="$1"
+    local headers=("${@:2}")
+    local options="${@:2}"
+    local headers_args=()
+    for header in "${headers[@]}"; do
+        headers_args+=("-H" "$header")
+    done
+    local response=$(curl -s -L "${headers_args[@]}" $options "$url")
+    echo "$response"
+}
 
 function getMostRecentArtifact(){
-    baseUri="https://api.github.com"
-    artifactUri="$baseUri/repos/$repo/actions/artifacts"
+    base_url="https://api.github.com"
+    artifact_url="$base_url/repos/$repo/actions/artifacts"
+    github_headers=("Accept: application/vnd.github+json" "Authorization: Bearer $token" "X-GitHub-Api-Version: 2022-11-28")
+    response=$(makeApiCall "${github_headers[@]}" "$artifact_url")
 
-    response=$(curl -L \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer $token" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "$artifactUri" 2>/dev/null)
-    
     if  [ -n "$response" ]; then
         most_recent_artifact=$( echo "$response" | jq --arg name "$artifact_name" '.artifacts | map(select(.name == "'$artifact_name'")) | sort_by(.created_at) | reverse')
         archive_download_url=$(echo "$most_recent_artifact" | jq -r 'first(.[] | .archive_download_url)')
-        echo "$archive_download_url"
+        curl -L -H "Authorization: Bearer $token"  "$archive_download_url" -o "./$artifact_name.zip"
+        unzip "$artifact_name.zip"
+        rm -rf "$artifact_name.zip"
     else
         echo "No artifacts were found."
         exit 0
@@ -66,5 +75,4 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-artifact=$(getMostRecentArtifact)
-echo $artifact
+getMostRecentArtifact
