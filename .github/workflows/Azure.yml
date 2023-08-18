@@ -168,6 +168,7 @@ jobs:
           TF_VAR_namespace: ${{ env.namespace }}
           TF_VAR_environment: ${{ env.environment }}
           TF_VAR_stage: ${{ env.stage }}
+          TF_VAR_location: ${{ env.location }}
           TF_VAR_admin_username: ${{ env.admin_username }}
           TF_VAR_admin_password: ${{ env.admin_password }}
           TF_VAR_trusted_ips: '["${{ env.trusted_ip }}" , "${{ env.runner_ip }}"]'
