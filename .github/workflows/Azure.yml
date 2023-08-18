@@ -165,7 +165,7 @@ jobs:
         working-directory: ${{ env.project_path }}
         shell: bash
         run: |
-          terraform plan -input=false -no-color -out=terraform.plan \
+          terraform plan -input=false -out=terraform.plan \
           && terraform show -no-color terraform.plan
         env:
           TF_VAR_name: ${{ env.name }}
@@ -188,6 +188,19 @@ jobs:
           echo "PLAN<<EOF" >> $GITHUB_ENV
           echo "$PLAN" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV 
+      - name: Running Terraform Apply
+        id: apply
+        if: steps.plan.outcome == 'success'
+        working-directory: ${{ env.project_path }}
+        run: |
+          terraform apply \
+            -input=false \
+            terraform.plan
+      - name: Saving Terraform Statefile Artifact
+        uses: actions/upload-artifacts@v3
+        with:
+          name: terraformstatefile
+          path: ${{ env.project_path }}/ansible/terraform.tfstate
       - name: Plan Failure
         if: steps.plan.outcome == 'failure'
         run: |
