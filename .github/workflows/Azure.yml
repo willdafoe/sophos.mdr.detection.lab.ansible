@@ -114,7 +114,7 @@ jobs:
       admin_password: ${{ github.event.inputs.admin_password }}
       trusted_ip: ${{ github.event.inputs.trusted_ip }}
       runner_ip: ${{ needs.which_lab.outputs.runner_ip }}
-    steps:
+    step:
       - id: runner_ip
         run: |
           RUNNER_IP=$(curl https://api.ipify.org)/32
@@ -153,13 +153,22 @@ jobs:
             domain_controller_count=${{ github.event.inputs.domain_controller_count }}
             windows_server_count=${{ github.event.inputs.windows_server_count }}
             windows_client_count=${{ github.event.inputs.windows_client_count }} 
-      - name: Checking for existing statefile artifact
-        id: artifact
-        working-directory: ${{ env.project_path }}
+      - name: Download artifact from build
+        uses: actions/download-artifact@v3
+        id: statefile
+        continue-on-error: true
+        with:
+          name: terraformstatefile  
+          path: ${{ env.project_path }}/ansible/terraformstatefile.zip
+          wait_seconds: 60
+      - name: Check if artifact was downloaded
+        working-directory: ${{ env.project_path }}/ansible
+        env:
+          artifact: ${{ steps.statefile.outputs.download-path }}
         run: |
-          ./scripts/getArtifact.sh \
-            --token ${{ github.token }} \
-            --repo ${{ github.repo }} 
+          echo "${{ env.artifact }}" \
+          && ls -lah
+  
       - name: Running Terraform init
         id: init
         working-directory: ${{ env.project_path }}    

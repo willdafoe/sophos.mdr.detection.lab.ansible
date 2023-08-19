@@ -1,0 +1,11 @@
+    if [[ $output_directory ]]; then
+        curl -L -H "Authorization: Bearer $token"  "$archive_download_url" -o "$output_directory/$artifact_name.zip"
+        unzip "$artifact_name.zip"
+        rm -rf "$output_directory/$artifact_name.zip"
+    elif [[ -z $output_directory ]]; then
+        curl -L -H "Authorization: Bearer $token"  "$archive_download_url" -o "$(pwd)/$artifact_name.zip"
+        unzip "$artifact_name.zip"
+        rm -rf "$artifact_name.zip"
+    else
+        :
+    fi    
