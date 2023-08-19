@@ -23,10 +23,10 @@ function die {
 }
 
 function getMostRecentArtifact(){
-    baseUri="https://api.github.com"
-    artifactUri="$baseUri/repos/$repo/actions/artifacts"
+baseUri="https://api.github.com"
+artifactUri="$baseUri/repos/$gh_repo/actions/artifacts"
 
-    response=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $token" -H "X-GitHub-Api-Version: 2022-11-28" "$artifactUri")
+response=$(curl -s -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $gh_token" -H "X-GitHub-Api-Version: 2022-11-28" "$artifactUri")
 
     echo "$response"
     if  [ -n "$response" ]; then
