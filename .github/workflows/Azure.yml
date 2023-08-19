@@ -237,6 +237,9 @@ jobs:
           playbook: playbook.yml
           requirements: requirements.yml
           options:
+            -e azure_client_id=${{ secrets.AZURE_CLIENT_ID }}
+            -e azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}
+            -e azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}
             -e ansible_winrm_server_cert_validation=ignore
             -e ansible_winrm_transport=ntlm
             -e ansible_port=5985
