@@ -236,11 +236,18 @@ jobs:
         env:
           ANSIBLE_USER: ${{ github.event.inputs.admin_username }}
           ANSIBLE_PASSWORD: ${{ github.event.inputs.admin_password }}
+          ANSIBLE_CONNECTION: winrm
+          ANSIBLE_WINRM_SCHEME: http
+          ANSIBLE_PORT: 5985
+          ANSIBLE_WINRM_TRANSPORT: ntlm
+          ANSIBLE_WINRM_SERVER_CERT_VALIDATION: ignore
         with:
           directory: ${{ env.project_path }}/ansible
           playbook: playbook.yml
           requirements: requirements.yml
           options:
+            -e admin_username=${{ github.event.inputs.admin_password }}
+            -e admin_password=${{ github.event.inputs.admin_password }}
             --verbose          
 
 
