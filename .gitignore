@@ -54,3 +54,6 @@ my.secrets
 **appId.json
 **assigneeObjectId.json
 **roleAssignment.json
+
+# test files
+**test.sh
