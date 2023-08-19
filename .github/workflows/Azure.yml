@@ -175,6 +175,7 @@ jobs:
           terraform init
       - name: Running Terraform Plan
         id: plan
+        working-directory: ${{ env.project_path }}
         continue-on-error: true
         shell: bash
         run: |
