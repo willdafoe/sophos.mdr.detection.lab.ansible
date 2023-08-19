@@ -114,7 +114,7 @@ jobs:
       admin_password: ${{ github.event.inputs.admin_password }}
       trusted_ip: ${{ github.event.inputs.trusted_ip }}
       runner_ip: ${{ needs.which_lab.outputs.runner_ip }}
-    step:
+    steps:
       - id: runner_ip
         run: |
           RUNNER_IP=$(curl https://api.ipify.org)/32
@@ -168,7 +168,6 @@ jobs:
         run: |
           echo "${{ env.artifact }}" \
           && ls -lah
-  
       - name: Running Terraform init
         id: init
         working-directory: ${{ env.project_path }}    
