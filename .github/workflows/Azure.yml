@@ -160,7 +160,6 @@ jobs:
         with:
           name: terraformstatefile  
           path: ${{ env.project_path }}/ansible/terraformstatefile.zip
-          wait_seconds: 60
       - name: Check if artifact was downloaded
         working-directory: ${{ env.project_path }}/ansible
         env:
