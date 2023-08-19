@@ -88,6 +88,7 @@ jobs:
     steps:
       - name: Hide sensitive inputs
         uses: levibostian/action-hide-sensitive-inputs@v1    
+        if: ${{ !env.ACT }}
         with:
           exclude_inputs: deployment_name, environment, name, admin_username, trusted_ip, domain_controller_count, windows_server_count,windows_client_count, location
       - id: setvars
@@ -170,7 +171,7 @@ jobs:
       - name: Verify run_id
         continue-on-error: true
         run: |
-          echo  '${{ steps.run.outputs.stdout || steps.run.outputs.stdout }}''
+          echo  '${{ steps.run.outputs.run_id }}''
       - name: action-zip
         continue-on-error: true
         uses: montudor/action-zip@v1.0.0
@@ -231,21 +232,18 @@ jobs:
           echo '${{ steps.plan.outputs.stderr }}'
       - uses: dawidd6/action-ansible-playbook@v2.6.1
         id: ansible
-        env:
-          ANSIBLE_USER: ${{ github.event.inputs.admin_username }}
-          ANSIBLE_PASSWORD: ${{ github.event.inputs.admin_password }}
-          ANSIBLE_CONNECTION: winrm
-          ANSIBLE_WINRM_SCHEME: http
-          ANSIBLE_PORT: 5985
-          ANSIBLE_WINRM_TRANSPORT: ntlm
-          ANSIBLE_WINRM_SERVER_CERT_VALIDATION: ignore
         with:
           directory: ${{ env.project_path }}/ansible
           playbook: playbook.yml
           requirements: requirements.yml
           options:
+            -e ansible_winrm_server_cert_validation=ignore
+            -e ansible_winrm_transport=ntlm
+            -e ansible_port=5985
+            -e ansible_winrm_scheme=http
+            -e ansible_connection=winrm
             -e admin_username=${{ github.event.inputs.admin_password }}
             -e admin_password=${{ github.event.inputs.admin_password }}
-            --verbose          
+            -vvv  
 
 

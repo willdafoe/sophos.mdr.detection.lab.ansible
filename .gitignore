@@ -46,7 +46,7 @@ terraform.rc
 # Act ignored files
 my.input
 my.secrets
-
+credentials.json
 # Local variables file
 *my_variables.yml
 
