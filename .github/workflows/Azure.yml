@@ -159,14 +159,17 @@ jobs:
         continue-on-error: true
         with:
           name: terraformstatefile  
-          path: ${{ env.project_path }}/ansible/terraformstatefile.zip
       - name: Check if artifact was downloaded
-        working-directory: ${{ env.project_path }}/ansible
+        working-directory: ${{ env.project_path }}
         env:
           artifact: ${{ steps.statefile.outputs.download-path }}
         run: |
           echo "${{ env.artifact }}" \
           && ls -lah
+      - name: action-zip
+        uses: montudor/action-zip@v1.0.0
+        with:
+          args: unzip -qq terraformstatefile.zip -d ${{ env.project_path }}/ansible 
       - name: Running Terraform init
         id: init
         working-directory: ${{ env.project_path }}    
@@ -220,5 +223,16 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: |
           echo '${{ steps.plan.outputs.stderr }}'
+      - uses: dawidd6/action-ansible-playbook@v2.6.1
+        id: ansible
+        env:
+          ANSIBLE_USER: ${{ github.event.inputs.admin_username }}
+          ANSIBLE_PASSWORD: ${{ github.event.inputs.admin_password }}
+        with:
+          directory: ${{ env.project_path }}/ansible
+          playbook: playbook.yml
+          requirements: requirements.yml
+          options:
+            --verbose          
 
 

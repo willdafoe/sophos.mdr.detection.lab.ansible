@@ -169,10 +169,3 @@ jobs:
           TF_VAR_location: ${{ github.event.inputs.location }}        
           
 
-      #- uses: dawidd6/action-ansible-playbook@v2.6.1
-      #  with:
-      #    directory: ${{ env.project_path }}/ansible
-      #    playbook: playbook.yml
-      #    requirements: requirements.yml
-      #    options:
-      #      --verbose
