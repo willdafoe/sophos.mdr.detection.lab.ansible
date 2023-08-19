@@ -167,32 +167,6 @@ jobs:
           TF_VAR_namespace: ${{ env.NAMESPACE }}
           TF_VAR_stage: ${{ env.STAGE }}
           TF_VAR_location: ${{ github.event.inputs.location }}        
-      - uses: actions/upload-artifact@v2
-        id: statefile
-        with:
-          name: terraformstatefile
-          path: ${{ env.project_path }}/terraform.tfstate.enc
-      - name: notify-microsoft-teams
-        uses: Skitionek/notify-microsoft-teams@v1.0.4
-        if: steps.apply.outcome == 'success'
-        env:
-          vm_credentials: ${{ steps.apply.outputs.vm_credentials }}
-        with:
-          webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          raw: >-
-            {
-              "@type": "MessageCard",
-              "@context": "http://schema.org/extensions",
-              "summary": "Terraform Deployment",
-              "sections": [{
-                "activityTitle": "Terraform Deployment is complete!",
-                "activitySubtitle" : "Virtual Machine Credentials",
-                "facts":[{
-                  "name": "Virtual Machine Credentials",
-                  "value": "${{ env.vm_credentials }}"
-                }] 
-              }]
-            }
           
 
       #- uses: dawidd6/action-ansible-playbook@v2.6.1

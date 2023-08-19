@@ -204,7 +204,7 @@ jobs:
             -input=false \
             terraform.plan
       - name: Saving Terraform Statefile Artifact
-        uses: actions/upload-artifacts@v3
+        uses: actions/upload-artifact@v3
         with:
           name: terraformstatefile
           path: ${{ env.project_path }}/ansible/terraform.tfstate
