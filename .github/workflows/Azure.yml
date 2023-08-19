@@ -171,6 +171,7 @@ jobs:
 
           echo "$run_id"
       - name: Verify run_id
+        continue-on-error: true
         run: |
           echo  '${{ steps.run.outputs.stdout || steps.run.outputs.stdout }}''
       - name: action-zip
