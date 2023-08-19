@@ -245,7 +245,7 @@ jobs:
             -e ansible_port=5985
             -e ansible_winrm_scheme=http
             -e ansible_connection=winrm
-            -e admin_username=${{ github.event.inputs.admin_password }}
+            -e admin_username=${{ github.event.inputs.admin_username }}
             -e admin_password=${{ github.event.inputs.admin_password }}
             -vvv  
 
