@@ -171,7 +171,7 @@ jobs:
       - name: Verify run_id
         continue-on-error: true
         run: |
-          echo  '${{ steps.run.outputs.run_id }}''
+          echo  '${{ steps.run.outputs.run_id }}'
       - name: action-zip
         continue-on-error: true
         uses: montudor/action-zip@v1.0.0
