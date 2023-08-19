@@ -2,7 +2,7 @@
 repo="${repo:-default ""}"
 token="${token:-default ""}"
 artifact_name="${artifact_name:-default ""}"
-output_directory="${output_directory:-default $(pwd)}"
+output_directory="$1"
 scriptname=$0
 
 function usage {
@@ -43,13 +43,21 @@ function getMostRecentArtifact(){
     if  [ -n "$response" ]; then
         most_recent_artifact=$( echo "$response" | jq --arg name "$artifact_name" '.artifacts | map(select(.name == "'$artifact_name'")) | sort_by(.created_at) | reverse')
         archive_download_url=$(echo "$most_recent_artifact" | jq -r 'first(.[] | .archive_download_url)')
-        curl -L -H "Authorization: Bearer $token"  "$archive_download_url" -o "./$artifact_name.zip"
-        unzip "$artifact_name.zip"
-        rm -rf "$artifact_name.zip"
     else
         echo "No artifacts were found."
         exit 0
     fi
+    if [[ $output_directory ]]; then
+        curl -L -H "Authorization: Bearer $token"  "$archive_download_url" -o "$output_directory/$artifact_name.zip"
+        unzip "$artifact_name.zip"
+        rm -rf "$output_directory/$artifact_name.zip"
+    elif [[ -z $output_directory ]]; then
+        curl -L -H "Authorization: Bearer $token"  "$archive_download_url" -o "$(pwd)/$artifact_name.zip"
+        unzip "$artifact_name.zip"
+        rm -rf "$artifact_name.zip"
+    else
+        :
+    fi    
 }
 
 if [[ -z $token ]]; then

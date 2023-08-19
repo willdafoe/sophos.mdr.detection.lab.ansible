@@ -169,7 +169,6 @@ jobs:
       - name: Running Terraform Plan
         id: plan
         continue-on-error: true
-        working-directory: ${{ env.project_path }}
         shell: bash
         run: |
           terraform plan -input=false -out=terraform.plan \
