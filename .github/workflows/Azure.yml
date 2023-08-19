@@ -169,7 +169,7 @@ jobs:
 
           run_id=$(echo "$most_recent" | jq -r '.workflow_run.id')
 
-          echo "$run_id" >>$GITHUB_OUTPUT
+          echo "$run_id"
       - name: Verify run_id
         run: |
           echo  '${{ steps.run.outputs.stdout || steps.run.outputs.stdout }}''
